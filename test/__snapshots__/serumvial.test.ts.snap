@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`serum-vial HTTP GET /markets 1`] = `
+Array [
+  Object {
+    "address": "HWHvQhFmJB3NUcu1aihKmrKegfVxBEHzwVX6yZCKEsi1",
+    "baseCurrency": "SOL",
+    "baseMintAddress": "So11111111111111111111111111111111111111112",
+    "deprecated": false,
+    "minOrderSize": 0.1,
+    "name": "SOL/USDT",
+    "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
+    "quoteCurrency": "USDT",
+    "quoteMintAddress": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    "tickSize": 0.001,
+    "version": 3,
+  },
+]
+`;
