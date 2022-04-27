@@ -1,10 +1,8 @@
-// import { EVENT_QUEUE_HEADER, decodeEventSince, ZoMarket, OrderBook }
 import { EVENT_QUEUE_LAYOUT, Market, Orderbook as booker, getLayoutVersion } from '@project-serum/serum'
-// import { Event } from '@project-serum/serum/lib/queue'
+import { Event } from '@project-serum/serum/lib/queue'
 import { PublicKey } from '@solana/web3.js'
 import { ZoMarket, Orderbook, EVENT_QUEUE_HEADER, decodeEventsSince } from '@zero_one/client'
-//@ts-ignore
-import { Event } from '@zero_one/client/src/zoDex/queue'
+// import { Event, EVENT_QUEUE_LAYOUT } from '@zero_one/client/src/zoDex/queue'
 import BN from 'bn.js'
 import { CircularBuffer } from './helpers'
 import { logger } from './logger'
@@ -225,9 +223,9 @@ export class DataMapper {
       const isInit = this._initialized === false
       if (isInit && accountsData.eventQueue !== undefined) {
         // initialize with last sequence number
-        const header = EVENT_QUEUE_HEADER.decode(accountsData.eventQueue)
-        // const { HEADER } = EVENT_QUEUE_LAYOUT
-        // const header = HEADER.decode(accountsData.eventQueue) as EventQueueHeader
+        // const header = EVENT_QUEUE_HEADER.decode(accountsData.eventQueue)
+        const { HEADER } = EVENT_QUEUE_LAYOUT
+        const header = HEADER.decode(accountsData.eventQueue) as EventQueueHeader
         this._lastSeenSeqNum = header.seqNum
       }
 
@@ -880,30 +878,30 @@ export class DataMapper {
   }
 
   private *_getNewlyAddedEvents(eventQueueData: Buffer) {
-    const header = EVENT_QUEUE_HEADER.decode(eventQueueData)
-    // const { HEADER, NODE } = EVENT_QUEUE_LAYOUT
-    // const header = HEADER.decode(eventQueueData) as EventQueueHeader
+    // const header = EVENT_QUEUE_HEADER.decode(eventQueueData)
+    const { HEADER, NODE } = EVENT_QUEUE_LAYOUT
+    const header = HEADER.decode(eventQueueData) as EventQueueHeader
 
     // based on seqNum provided by event queue we can calculate how many events have been added
     // to the queue since last update (header.seqNum - _lastSeenSeqNum)
     // if we don't have stored _lastSeenSeqNum it means it's first notification so let's just initialize _lastSeenSeqNum
 
     if (this._lastSeenSeqNum !== undefined) {
-      // const allocLen = Math.floor((eventQueueData.length - HEADER.span) / NODE.span)
+      const allocLen = Math.floor((eventQueueData.length - EVENT_QUEUE_HEADER.span) / NODE.span)
 
-      // const newEventsCount = Math.min(header.seqNum - this._lastSeenSeqNum, allocLen - 1)
+      const newEventsCount = Math.min(header.seqNum - this._lastSeenSeqNum, allocLen - 1)
 
-      // for (let i = newEventsCount; i > 0; --i) {
-      //   const nodeIndex = (header.head + header.count + allocLen - i) % allocLen
-      //   const decodedItem = NODE.decode(eventQueueData, HEADER.span + nodeIndex * NODE.span) as Event
+      for (let i = newEventsCount; i > 0; --i) {
+        const nodeIndex = (header.head + header.count + allocLen - i) % allocLen
+        const decodedItem = NODE.decode(eventQueueData, HEADER.span + nodeIndex * NODE.span) as Event
 
-      //   yield decodedItem
-      // }
-
-      const events = decodeEventsSince(eventQueueData, this._lastSeenSeqNum)
-      for (const newEvent of events) {
-        yield newEvent
+        yield decodedItem
       }
+
+      // const events = decodeEventsSince(eventQueueData, this._lastSeenSeqNum)
+      // for (const newEvent of events) {
+      //   yield newEvent
+      // }
     }
 
     this._lastSeenSeqNum = header.seqNum

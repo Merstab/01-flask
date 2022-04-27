@@ -184,12 +184,14 @@ export async function getZoPerpMarkets(cluster: string, endpoint: string): Promi
     throw new Error(`Invalid Arguments`)
   }
 
-  return Object.values(zoState.markets).map((market) => {
-    return {
-      name: market.symbol, // replace with symbol
-      symbol: market.symbol, // replace with symbol
-      address: market.pubKey.toBase58(),
-      programId: zoDexKey.toBase58()
-    }
-  })
+  return Object.values(zoState.markets)
+    .filter((m) => m.marketType == 0)
+    .map((market) => {
+      return {
+        name: market.symbol, // replace with symbol
+        symbol: market.symbol, // replace with symbol
+        address: market.pubKey.toBase58(),
+        programId: zoDexKey.toBase58()
+      }
+    })
 }

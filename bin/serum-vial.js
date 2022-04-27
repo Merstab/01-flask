@@ -7,6 +7,7 @@ const pkg = require('../package.json')
 
 const DEFAULT_PORT = 8000
 const DEFAULT_NODE_ENDPOINT = 'https://solana-api.projectserum.com'
+// const DEFAULT_NODE_ENDPOINT = 'https://api.devnet.solana.com'
 
 const argv = yargs
   .scriptName('serum-vial')
@@ -29,8 +30,8 @@ const argv = yargs
     type: 'number',
     describe:
       'Optional Solana RPC WS node endpoint port that serum-vial uses as a data source (if different than REST endpoint port)',
-    // default: undefined
-    default: DEFAULT_PORT
+    default: undefined
+    // default: 7000
   })
 
   .option('log-level', {
@@ -59,16 +60,17 @@ const argv = yargs
     default: 500
   })
 
-  .option('markets-json', {
-    type: 'string',
-    describe: 'Path to custom market.json definition file',
-    default: ''
-  })
+  // .option('markets-json', {
+  //   type: 'string',
+  //   describe: 'Path to custom market.json definition file',
+  //   default: ''
+  // })
 
   .option('cluster', {
     type: 'string',
     describe: 'Path to custom market.json definition file',
     default: 'mainnet-beta'
+    // default: 'devnet'
   })
 
   .help()
