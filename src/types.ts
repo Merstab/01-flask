@@ -25,8 +25,8 @@ export interface RecentTrades extends Message {
 
 export interface DataMessage extends Message {
   readonly market: string
-  // readonly version: number //remove
   readonly slot: number
+  // readonly version: number
 }
 
 export interface ErrorResponse extends Message {
@@ -114,39 +114,17 @@ export interface L3Snapshot extends DataMessage {
 
 export type L3DataMessage = Open | Fill | Done | L3Snapshot | Change
 
-export type SerumListMarketItem = {
-  name: string
-  address: string
-  baseCurrency: string
-  quoteCurrency: string
-  version: number // remove
-  programId: string
-  baseMintAddress: string
-  quoteMintAddress: string
-  tickSize: number
-  minOrderSize: number
-  deprecated: boolean
-}
-
 export type ZoListMarketItem = {
   name: string
   address: string
   baseCurrency: string
   quoteCurrency: string
-  // version: number // remove
   programId: string
-  baseMintAddress: string
-  quoteMintAddress: string
+  // baseMintAddress: string
+  // quoteMintAddress: string
   tickSize: number
   minOrderSize: number
-  // deprecated: boolean
-}
-
-export type SerumMarket = {
-  address: string
-  name: string
-  programId: string
-  deprecated: boolean
+  // version: number
 }
 
 export type ZoMarketInfo = {

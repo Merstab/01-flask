@@ -1,13 +1,13 @@
-import { EVENT_QUEUE_LAYOUT, Market, Orderbook as booker, getLayoutVersion } from '@project-serum/serum'
+// import { Event, EVENT_QUEUE_LAYOUT } from '@zero_one/client/src/zoDex/queue'
+import { EVENT_QUEUE_LAYOUT } from '@project-serum/serum'
 import { Event } from '@project-serum/serum/lib/queue'
 import { PublicKey } from '@solana/web3.js'
 import { ZoMarket, Orderbook, EVENT_QUEUE_HEADER, decodeEventsSince } from '@zero_one/client'
-// import { Event, EVENT_QUEUE_LAYOUT } from '@zero_one/client/src/zoDex/queue'
 import BN from 'bn.js'
 import { CircularBuffer } from './helpers'
 import { logger } from './logger'
 import { AccountsNotificationPayload } from './rpc_client'
-import { MessageEnvelope } from './serum_producer'
+import { MessageEnvelope } from './zo_producer'
 import {
   Change,
   DataMessage,
@@ -67,7 +67,7 @@ export class DataMapper {
       readonly sizeDecimalPlaces: number
     }
   ) {
-    // this._version = getLayoutVersion(this._options.market.programId) as number // irrelevant
+    // this._version = getLayoutVersion(this._options.market.programId) as number
     const zero = 0
     this._zeroWithPrecision = zero.toFixed(this._options.sizeDecimalPlaces)
   }
@@ -128,7 +128,6 @@ export class DataMapper {
                 market: this._options.symbol,
                 timestamp,
                 slot,
-                // version: this._version, // remove
                 orderId: makerFill.orderId,
                 clientId: makerFill.clientId,
                 side: makerFill.side,
@@ -137,6 +136,7 @@ export class DataMapper {
                 account: makerFill.account,
                 accountSlot: makerFill.accountSlot,
                 feeTier: makerFill.feeTier
+                // version: this._version,
               }
 
               l3Diff.push(openMessage)
@@ -215,9 +215,9 @@ export class DataMapper {
         market: this._options.symbol,
         timestamp,
         slot,
-        // version: this._version, // remove
         asks: this._asksAccountOrders!,
         bids: this._bidsAccountOrders!
+        // version: this._version, // remove
       }
 
       const isInit = this._initialized === false
@@ -262,9 +262,9 @@ export class DataMapper {
         market: this._options.symbol,
         timestamp,
         slot,
-        // version: this._version, //remove
         asks: this._currentL2Snapshot.asks,
         bids: this._currentL2Snapshot.bids
+        // version: this._version
       }
 
       this._currentQuote = {
@@ -277,9 +277,9 @@ export class DataMapper {
         market: this._options.symbol,
         timestamp,
         slot,
-        // version: this._version, //remove
         bestAsk: this._currentQuote.bestAsk,
         bestBid: this._currentQuote.bestBid
+        // version: this._version
       }
 
       yield this._putInEnvelope(l2SnapshotMessage, true)
@@ -367,7 +367,6 @@ export class DataMapper {
             market: this._options.symbol,
             timestamp,
             slot,
-            // version: this._version,
             id: tradeId,
             side: message.side,
             price: message.price,
@@ -380,6 +379,7 @@ export class DataMapper {
             makerClientId: matchingMakerFill?.clientId!,
             takerFeeCost: message.feeCost!,
             makerFeeCost: matchingMakerFill?.feeCost!
+            // version: this._version
           }
 
           yield this._putInEnvelope(tradeMessage, true)
@@ -435,9 +435,9 @@ export class DataMapper {
         market: this._options.symbol,
         timestamp,
         slot,
-        // version: this._version, //remove
         asks: asksDiff,
         bids: bidsDiff
+        // version: this._version
       }
 
       // first goes update
@@ -457,9 +457,9 @@ export class DataMapper {
           market: this._options.symbol,
           timestamp,
           slot,
-          // version: this._version, // remove
           bestAsk: this._currentQuote.bestAsk,
           bestBid: this._currentQuote.bestBid
+          // version: this._version
         }
 
         yield this._putInEnvelope(quoteMessage, true)
@@ -773,7 +773,6 @@ export class DataMapper {
         market: this._options.symbol,
         timestamp,
         slot,
-        // version: this._version, // no version yet
         orderId,
         clientId,
         side,
@@ -784,6 +783,7 @@ export class DataMapper {
         account: openOrdersAccount,
         accountSlot: openOrdersSlot,
         feeTier: feeTier
+        // version: this._version
       }
       return fillMessage
     } else if (event.nativeQuantityPaid.eqn(0)) {
@@ -819,7 +819,6 @@ export class DataMapper {
         market: this._options.symbol,
         timestamp,
         slot,
-        // version: this._version,
         orderId,
         clientId,
         side,
@@ -828,6 +827,7 @@ export class DataMapper {
         accountSlot: openOrdersSlot,
         sizeRemaining:
           reason === 'canceled' ? this._getDoneSize(event).toFixed(this._options.sizeDecimalPlaces) : undefined
+        // version: this._version
       }
       return doneMessage
     }
@@ -897,11 +897,6 @@ export class DataMapper {
 
         yield decodedItem
       }
-
-      // const events = decodeEventsSince(eventQueueData, this._lastSeenSeqNum)
-      // for (const newEvent of events) {
-      //   yield newEvent
-      // }
     }
 
     this._lastSeenSeqNum = header.seqNum
@@ -919,7 +914,6 @@ export class DataMapper {
       market: this._options.symbol,
       timestamp,
       slot,
-      // version: this._version, // remove
       orderId,
       clientId,
       side,
@@ -928,6 +922,7 @@ export class DataMapper {
       account,
       accountSlot,
       feeTier
+      // version: this._version
     }
   }
 

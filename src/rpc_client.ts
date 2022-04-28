@@ -1,4 +1,3 @@
-import { Market } from '@project-serum/serum' // Replace ZoMarket from "@zero_one/client"
 import { AccountInfo, Commitment, PublicKey } from '@solana/web3.js'
 import { ZoMarket } from '@zero_one/client'
 import AbortController from 'abort-controller'
@@ -200,6 +199,7 @@ class AccountsChangeNotifications {
       {
         name: 'eventQueue',
         reqId: 3000,
+        // address: market.eventQueueAddress.toBase58()
         address: (market as any)._decoded.eventQueue.toBase58()
       }
     ]

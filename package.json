@@ -8,19 +8,19 @@
   "main": "dist/index.js",
   "source": "src/index.js",
   "types": "dist/index.d.ts",
-  "repository": "tardis-dev/serum-vial",
-  "homepage": "https://github.com/tardis-dev/serum-vial",
+  "repository": "Merstab/01-flask",
+  "homepage": "https://github.com/Merstab/01-flask",
   "scripts": {
     "build": "tsc",
     "precommit": "lint-staged",
     "test": "npm run build && jest --forceExit",
     "prepare": "npm run build",
-    "start:debug": "npm run build && node ./bin/serum-vial.js --log-level=debug",
+    "start:debug": "npm run build && node ./bin/zo-flask.js --log-level=debug",
     "format": "prettier --write .",
     "check-format": "prettier --check ."
   },
   "bin": {
-    "serum-vial": "bin/serum-vial.js"
+    "zo-flask": "bin/zo-flask.js"
   },
   "files": [
     "src",
@@ -30,6 +30,8 @@
   "keywords": [
     "serum dex",
     "serum api",
+    "01 api",
+    "01 dex",
     "api client",
     "solana",
     "cryptocurrency api",

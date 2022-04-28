@@ -1,9 +1,9 @@
 import os from 'os'
 import path from 'path'
 import { Worker } from 'worker_threads'
-import { cleanupChannel, minionReadyChannel, serumProducerReadyChannel, wait } from './helpers'
+import { cleanupChannel, minionReadyChannel, zoProducerReadyChannel, wait } from './helpers'
 import { logger } from './logger'
-import { SerumMarket, ZoMarketInfo } from './types' //Replace with ZoMarketInfo
+import { ZoMarketInfo } from './types' //Replace with ZoMarketInfo
 
 export async function bootServer({
   port,
@@ -53,27 +53,24 @@ BootOptions) {
     resolve()
   })
 
-  logger.log('info', `Starting serum producers for ${markets.length} markets, rpc endpoint: ${nodeEndpoint}`)
+  logger.log('info', `Starting 01 producers for ${markets.length} markets, rpc endpoint: ${nodeEndpoint}`)
 
   let readyProducersCount = 0
 
-  serumProducerReadyChannel.onmessage = () => readyProducersCount++
+  zoProducerReadyChannel.onmessage = () => readyProducersCount++
 
   for (const market of markets) {
-    const serumProducerWorker = new Worker(path.resolve(__dirname, 'serum_producer.js'), {
+    const zoProducerWorker = new Worker(path.resolve(__dirname, 'zo_producer.js'), {
       workerData: { market, nodeEndpoint, commitment, wsEndpointPort }
     })
 
-    serumProducerWorker.on('error', (err) => {
-      logger.log(
-        'error',
-        `Serum producer worker ${serumProducerWorker.threadId} error occurred: ${err.message} ${err.stack}`
-      )
+    zoProducerWorker.on('error', (err) => {
+      logger.log('error', `01 producer worker ${zoProducerWorker.threadId} error occurred: ${err.message} ${err.stack}`)
       throw err
     })
 
-    serumProducerWorker.on('exit', (code) => {
-      logger.log('error', `Serum producer worker: ${serumProducerWorker.threadId} died with code: ${code}`)
+    zoProducerWorker.on('exit', (code) => {
+      logger.log('error', `01 producer worker: ${zoProducerWorker.threadId} died with code: ${code}`)
     })
 
     // just in case to not get hit by serum RPC node rate limits...

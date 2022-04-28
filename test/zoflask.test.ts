@@ -1,16 +1,18 @@
 import fetch from 'node-fetch'
 import WebSocket from 'ws'
-import { bootServer, stopServer, DataMessage, SerumListMarketItem, SubRequest, SuccessResponse } from '../dist'
+import { bootServer, stopServer, DataMessage, ZoListMarketItem, SubRequest, SuccessResponse } from '../dist'
 import { wait } from '../dist/helpers'
 
 const PORT = 8989
-const TIMEOUT = 180 * 1000
+const TIMEOUT = 60 * 1000
 const WS_ENDPOINT = `ws://localhost:${PORT}/v1/ws`
 
 async function fetchMarkets() {
   const response = await fetch(`http://localhost:${PORT}/v1/markets`)
 
-  return (await response.json()) as SerumListMarketItem[]
+  // console.log(await response.json())
+
+  return (await response.json()) as ZoListMarketItem[]
 }
 
 describe('serum-vial', () => {
@@ -20,16 +22,22 @@ describe('serum-vial', () => {
       commitment: 'confirmed',
       markets: [
         {
-          address: 'HWHvQhFmJB3NUcu1aihKmrKegfVxBEHzwVX6yZCKEsi1',
-          deprecated: false,
-          name: 'SOL/USDT',
-          programId: '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+          address: '8JbzKqa9CK85Po4PophvA5NkuKSacgEnZdhwW64pu4Vd',
+          symbol: 'BTC-PERP',
+          name: 'BTC-PERP',
+          programId: 'ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK'
+        },
+        {
+          address: 'EqZrg5VzrJdBs9EnUBURXJMyhHZ5A4YeX57g62Uufk8w',
+          symbol: 'SOL-PERP',
+          name: 'SOL-PERP',
+          programId: 'ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK'
         }
       ],
       minionsCount: 1,
       nodeEndpoint: 'https://solana-api.projectserum.com',
       wsEndpointPort: undefined,
-      bootDelay: 0
+      bootDelay: 5
     })
   }, TIMEOUT)
 

@@ -1,4 +1,3 @@
-import { getLayoutVersion, Market } from '@project-serum/serum'
 import { Connection, PublicKey } from '@solana/web3.js'
 import { ZoMarket } from '@zero_one/client'
 import { App, HttpResponse, DISABLED, SSLApp, TemplatedApp, us_listen_socket_close, WebSocket } from 'uWebSockets.js'
@@ -10,22 +9,13 @@ import {
   getAllowedValuesText,
   getDidYouMean,
   minionReadyChannel,
-  serumDataChannel,
-  serumMarketsChannel,
+  zoDataChannel,
+  zoMarketsChannel,
   wait
 } from './helpers'
 import { logger } from './logger'
-import { MessageEnvelope } from './serum_producer'
-import {
-  ErrorResponse,
-  RecentTrades,
-  SerumListMarketItem,
-  SerumMarket,
-  SubRequest,
-  SuccessResponse,
-  ZoListMarketItem,
-  ZoMarketInfo
-} from './types'
+import { MessageEnvelope } from './zo_producer'
+import { ErrorResponse, RecentTrades, SubRequest, SuccessResponse, ZoListMarketItem, ZoMarketInfo } from './types'
 
 const meta = {
   minionId: threadId
@@ -85,7 +75,6 @@ class Minion {
 
   private MAX_BACKPRESSURE = 3 * 1024 * 1024
 
-  // _markets: ZoMarketInfo[]
   constructor(private readonly _nodeEndpoint: string, private readonly _markets: ZoMarketInfo[]) {
     this._marketNames = _markets.map((m) => m.name)
     this._server = this._initServer()
@@ -166,32 +155,30 @@ class Minion {
         this._markets.map((market) => {
           return executeAndRetry(
             async () => {
-              // const connection = new Conection(this._nodeEndpoint)
               const connection = new Connection(this._nodeEndpoint)
 
-              // zoMarket.load(connection, new PublicKey(market.address), {}, new PublicKey(market.programId))
-              const { tickSize, minOrderSize, baseMintAddress, quoteMintAddress, programId } = await ZoMarket.load(
-                connection,
-                new PublicKey(market.address),
-                // undefined,
-                {},
-                new PublicKey(market.programId)
-              )
+              const { tickSize, minOrderSize, baseMintAddress, quoteMintAddress, programId, address, decoded } =
+                await ZoMarket.load(
+                  connection,
+                  new PublicKey(market.address),
+                  // undefined,
+                  {},
+                  new PublicKey(market.programId)
+                )
 
-              // const [baseCurrency, quoteCurrency] = market.name.split('/')
-              const [baseCurrency, quoteCurrency] = market.symbol.split('-')
+              const [baseCurrency, type] = market.symbol.split('-')
+
               const zoMarket: ZoListMarketItem = {
                 name: market.name, // replace with symbol market.symbol
-                baseCurrency: baseCurrency!,
-                quoteCurrency: quoteCurrency!,
-                // version: getLayoutVersion(programId),
+                baseCurrency: type === 'PERP' ? baseCurrency! : market.symbol,
+                quoteCurrency: 'USDC',
                 address: market.address,
                 programId: market.programId,
-                baseMintAddress: baseMintAddress.toBase58(),
-                quoteMintAddress: quoteMintAddress.toBase58(),
+                // baseMintAddress: baseMintAddress.toBase58(), // zo market return undefined
+                // quoteMintAddress: quoteMintAddress.toBase58(), // zo market returns undefied
                 tickSize,
                 minOrderSize
-                // deprecated: market.deprecated // not included
+                // version: getLayoutVersion(programId),
               }
               return zoMarket
             },
@@ -201,7 +188,7 @@ class Minion {
       )
 
       this._cachedListMarketsResponse = JSON.stringify(markets, null, 2)
-      serumMarketsChannel.postMessage(this._cachedListMarketsResponse)
+      zoMarketsChannel.postMessage(this._cachedListMarketsResponse)
     }
 
     await wait(1)
@@ -210,6 +197,7 @@ class Minion {
       res.writeStatus('200 OK')
       res.writeHeader('Content-Type', 'application/json')
       res.end(this._cachedListMarketsResponse)
+      // res.end(JSON.stringify(some))
     }
   }
 
@@ -471,13 +459,13 @@ if (minionNumber === 0) {
 }
 
 minion.start(port).then(() => {
-  serumDataChannel.onmessage = (message) => {
+  zoDataChannel.onmessage = (message) => {
     lastPublishTimestamp = new Date()
 
     minion.processMessages(message.data)
   }
 
-  serumMarketsChannel.onmessage = (message) => {
+  zoMarketsChannel.onmessage = (message) => {
     minion.initMarketsCache(message.data)
   }
 

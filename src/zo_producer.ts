@@ -1,13 +1,12 @@
-import { Market } from '@project-serum/serum'
 import { PublicKey } from '@solana/web3.js'
 import { ZoMarket } from '@zero_one/client'
 import { isMainThread, workerData } from 'worker_threads'
 import { MessageType } from './consts'
 import { DataMapper } from './data_mapper'
-import { decimalPlaces, serumDataChannel, serumProducerReadyChannel } from './helpers'
+import { decimalPlaces, zoDataChannel, zoProducerReadyChannel } from './helpers'
 import { logger } from './logger'
 import { RPCClient } from './rpc_client'
-import { SerumMarket, ZoMarketInfo } from './types'
+import { ZoMarketInfo } from './types'
 
 if (isMainThread) {
   const message = 'Exiting. Worker is not meant to run in main thread'
@@ -24,7 +23,7 @@ process.on('unhandledRejection', (err) => {
 // - connect to Serum Node RPC API via WS and subscribe to single Serum market
 // - map received data to normalized data messages and broadcast those
 
-export class SerumProducer {
+export class ZoProducer {
   constructor(
     private readonly _options: {
       nodeEndpoint: string
@@ -36,7 +35,7 @@ export class SerumProducer {
 
   public async run(onData: OnDataCallback) {
     let started = false
-    logger.log('info', `Serum producer starting for ${this._options.market.name} market...`)
+    logger.log('info', `01 producer starting for ${this._options.market.name} market...`)
 
     // don't use Solana web3.js Connection but custom rpcClient so we have more control and insight what is going on
     const rpcClient = new RPCClient({
@@ -85,9 +84,9 @@ export class SerumProducer {
 
     for await (const notification of rpcClient.streamAccountsNotification(market, this._options.market.name)) {
       if (started === false) {
-        logger.log('info', `Serum producer started for ${this._options.market.name} market...`)
+        logger.log('info', `01 producer started for ${this._options.market.name} market...`)
         started = true
-        serumProducerReadyChannel.postMessage('ready')
+        zoProducerReadyChannel.postMessage('ready')
       }
 
       const messagesForSlot = [...dataMapper.map(notification)]
@@ -99,10 +98,10 @@ export class SerumProducer {
   }
 }
 
-const serumProducer = new SerumProducer(workerData)
+const zoProducer = new ZoProducer(workerData)
 
-serumProducer.run((envelopes) => {
-  serumDataChannel.postMessage(envelopes)
+zoProducer.run((envelopes) => {
+  zoDataChannel.postMessage(envelopes)
 })
 
 export type MessageEnvelope = {

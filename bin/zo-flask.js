@@ -7,10 +7,9 @@ const pkg = require('../package.json')
 
 const DEFAULT_PORT = 8000
 const DEFAULT_NODE_ENDPOINT = 'https://solana-api.projectserum.com'
-// const DEFAULT_NODE_ENDPOINT = 'https://api.devnet.solana.com'
 
 const argv = yargs
-  .scriptName('serum-vial')
+  .scriptName('zo-flask')
   .env('SV_')
   .strict()
 
@@ -22,16 +21,15 @@ const argv = yargs
 
   .option('endpoint', {
     type: 'string',
-    describe: 'Solana RPC node endpoint that serum-vial uses as a data source',
+    describe: 'Solana RPC node endpoint that zo-flask uses as a data source',
     default: DEFAULT_NODE_ENDPOINT
   })
 
   .option('ws-endpoint-port', {
     type: 'number',
     describe:
-      'Optional Solana RPC WS node endpoint port that serum-vial uses as a data source (if different than REST endpoint port)',
+      'Optional Solana RPC WS node endpoint port that zo-flask uses as a data source (if different than REST endpoint port)',
     default: undefined
-    // default: 7000
   })
 
   .option('log-level', {
@@ -56,49 +54,31 @@ const argv = yargs
 
   .option('boot-delay', {
     type: 'string',
-    describe: 'Staggered boot delay in milliseconds so public RPC nodes do not rate limit serum-vial',
+    describe: 'Staggered boot delay in milliseconds so public RPC nodes do not rate limit zo-flask',
     default: 500
   })
-
-  // .option('markets-json', {
-  //   type: 'string',
-  //   describe: 'Path to custom market.json definition file',
-  //   default: ''
-  // })
 
   .option('cluster', {
     type: 'string',
     describe: 'Path to custom market.json definition file',
     default: 'mainnet-beta'
-    // default: 'devnet'
   })
 
   .help()
   .version()
   .usage('$0 [options]')
   .example(`$0 --endpoint ${DEFAULT_NODE_ENDPOINT}`)
-  .epilogue('See https://github.com/tardis-dev/serum-vial for more information.')
+  .epilogue('See https://github.com/Merstab/01-flask for more information.')
   .detectLocale(false).argv
 
 // if port ENV is defined use it otherwise use provided options
 const port = process.env.PORT ? +process.env.PORT : argv['port']
 process.env.LOG_LEVEL = argv['log-level']
 
-const { bootServer, logger, getDefaultMarkets, getZoPerpMarkets } = require('../dist')
+const { bootServer, logger, getZoPerpMarkets } = require('../dist')
 
 async function start() {
   let markets = await getZoPerpMarkets(argv['cluster'], argv['endpoint'])
-  // let markets = getDefaultMarkets()
-  // const marketsJsonPath = argv['markets-json']
-  // if (marketsJsonPath) {
-  //   try {
-  //     const fullPath = path.join(process.cwd(), argv['markets-json'])
-  //     markets = require(fullPath)
-  //     logger.log('info', `Loaded custom markets from ${fullPath}`)
-  //   } catch {
-  //     markets = getDefaultMarkets()
-  //   }
-  // }
 
   const options = {
     port,
@@ -110,7 +90,7 @@ async function start() {
     // cluster: argv['cluster']
   }
 
-  logger.log('info', 'Starting serum-vial server with options', options)
+  logger.log('info', 'Starting 01-flask server with options', options)
 
   const startTimestamp = new Date().valueOf()
   await bootServer({
@@ -121,12 +101,12 @@ async function start() {
   const bootTimeSeconds = Math.ceil((new Date().valueOf() - startTimestamp) / 1000)
 
   if (isDocker()) {
-    logger.log('info', `Serum-vial v${pkg.version} is running inside Docker container.`, { bootTimeSeconds })
+    logger.log('info', `01-flask v${pkg.version} is running inside Docker container.`, { bootTimeSeconds })
   } else {
-    logger.log('info', `Serum-vial server v${pkg.version} is running on port ${port}.`, { bootTimeSeconds })
+    logger.log('info', `01-flask server v${pkg.version} is running on port ${port}.`, { bootTimeSeconds })
   }
 
-  logger.log('info', `See https://github.com/tardis-dev/serum-vial for more information.`)
+  logger.log('info', `See https://github.com/Merstab/01-flask for more information.`)
 }
 
 start()

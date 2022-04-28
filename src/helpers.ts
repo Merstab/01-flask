@@ -1,5 +1,3 @@
-import { Config } from '@blockworks-foundation/mango-client'
-import { MARKETS as DEFAULT_SERUM_MARKETS } from '@project-serum/serum'
 import { Connection } from '@solana/web3.js'
 import {
   Cluster,
@@ -12,7 +10,7 @@ import {
   ZO_MAINNET_STATE_KEY
 } from '@zero_one/client'
 import didYouMean from 'didyoumean2'
-import { SerumMarket, ZoMarketInfo } from './types'
+import { ZoMarketInfo } from './types'
 
 export const wait = (delayMS: number) => new Promise((resolve) => setTimeout(resolve, delayMS))
 
@@ -99,9 +97,9 @@ export class CircularBuffer<T> {
 const { BroadcastChannel } = require('worker_threads')
 
 export const minionReadyChannel = new BroadcastChannel('MinionReady') as BroadcastChannel
-export const serumProducerReadyChannel = new BroadcastChannel('SerumProducerReady') as BroadcastChannel
-export const serumDataChannel = new BroadcastChannel('SerumData') as BroadcastChannel
-export const serumMarketsChannel = new BroadcastChannel('SerumMarkets') as BroadcastChannel
+export const zoProducerReadyChannel = new BroadcastChannel('ZoProducerReady') as BroadcastChannel
+export const zoDataChannel = new BroadcastChannel('ZoData') as BroadcastChannel
+export const zoMarketsChannel = new BroadcastChannel('ZoMarkets') as BroadcastChannel
 export const cleanupChannel = new BroadcastChannel('Cleanup') as BroadcastChannel
 
 export async function executeAndRetry<T>(
@@ -123,52 +121,6 @@ export async function executeAndRetry<T>(
   }
 }
 
-export function getMangoSpotMarkets(): SerumMarket[] {
-  const mangoGroupConfig = Config.ids().groups.filter((group) => group.name === 'mainnet.1')[0]!
-
-  return mangoGroupConfig.spotMarkets.map((market) => {
-    return {
-      name: market.name,
-      address: market.publicKey.toBase58(),
-      programId: mangoGroupConfig.serumProgramId.toBase58(),
-      deprecated: false
-    }
-  })
-}
-export function getDefaultMarkets(): SerumMarket[] {
-  const defaultMarkets: SerumMarket[] = []
-
-  for (const market of DEFAULT_SERUM_MARKETS) {
-    if (market.deprecated) {
-      continue
-    }
-
-    if (defaultMarkets.some((s) => s.name === market.name)) {
-      continue
-    }
-
-    defaultMarkets.push({
-      name: market.name,
-      address: market.address.toBase58(),
-      programId: market.programId.toBase58(),
-      deprecated: false
-    })
-  }
-  for (const mangoSpotMarket of getMangoSpotMarkets()) {
-    if (defaultMarkets.some((s) => s.name === mangoSpotMarket.name)) {
-      continue
-    }
-
-    defaultMarkets.push(mangoSpotMarket)
-  }
-
-  return defaultMarkets
-}
-
-// pass in cluster, endpoint url as argument => ZoMarketInfo
-// need enough info here to create a zoMarket in mangoproducer. which takes in
-// zoMarket.load(connection, address, options, programId)
-
 export async function getZoPerpMarkets(cluster: string, endpoint: string): Promise<ZoMarketInfo[]> {
   const connection = new Connection(endpoint)
   const provider = createProvider(connection, undefined!)
@@ -184,14 +136,16 @@ export async function getZoPerpMarkets(cluster: string, endpoint: string): Promi
     throw new Error(`Invalid Arguments`)
   }
 
-  return Object.values(zoState.markets)
-    .filter((m) => m.marketType == 0)
-    .map((market) => {
-      return {
-        name: market.symbol, // replace with symbol
-        symbol: market.symbol, // replace with symbol
-        address: market.pubKey.toBase58(),
-        programId: zoDexKey.toBase58()
-      }
-    })
+  return (
+    Object.values(zoState.markets)
+      // .filter((m) => m.marketType == 0)
+      .map((market) => {
+        return {
+          name: market.symbol,
+          symbol: market.symbol,
+          address: market.pubKey.toBase58(),
+          programId: zoDexKey.toBase58()
+        }
+      })
+  )
 }
