@@ -60,7 +60,8 @@ const argv = yargs
 
   .option('cluster', {
     type: 'string',
-    describe: 'Path to custom market.json definition file',
+    describe: 'Solana cluster to connect to',
+    choices: ['devnet', 'mainnet-beta'],
     default: 'mainnet-beta'
   })
 
