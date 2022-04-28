@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/Merstab/01-flask/main/01-Flask-Banner.svg">
+<img src="/01-Flask-Banner.svg">
 
 [![Version](https://img.shields.io/npm/v/01-flask.svg?color=05aac5)](https://www.npmjs.org/package/01-flask)
 [![Docker version](https://img.shields.io/docker/v/tardisdev/01-flask/latest?label=Docker&color=05aac5)](https://hub.docker.com/r/tardisdev/01-flask)
