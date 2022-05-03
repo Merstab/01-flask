@@ -58,7 +58,7 @@
       ],
       "fontSize": 28,
       "fontFamily": 3,
-      "text": "serum-vial server",
+      "text": "01-flask server",
       "baseline": 27,
       "textAlign": "left",
       "verticalAlign": "top"
@@ -158,7 +158,7 @@
       "boundElementIds": [],
       "fontSize": 28,
       "fontFamily": 3,
-      "text": "Serum Producer\nfor market \"A\"",
+      "text": "01 Producer\nfor market \"A\"",
       "baseline": 61,
       "textAlign": "left",
       "verticalAlign": "top"
@@ -754,7 +754,7 @@
       ],
       "fontSize": 20,
       "fontFamily": 3,
-      "text": "Serum accounts data changes for all markets\n\n* event queue\n* bids\n* asks",
+      "text": "01 accounts data changes for all markets\n\n* event queue\n* bids\n* asks",
       "baseline": 115,
       "textAlign": "left",
       "verticalAlign": "top"
@@ -1079,7 +1079,7 @@
       "boundElementIds": [],
       "fontSize": 28,
       "fontFamily": 3,
-      "text": "Serum Producer\nfor market \"Z\"",
+      "text": "01 Producer\nfor market \"Z\"",
       "baseline": 61,
       "textAlign": "left",
       "verticalAlign": "top"

@@ -1,6 +1,6 @@
 {
-  "name": "serum-vial",
-  "version": "1.7.0",
+  "name": "01-flask",
+  "version": "0.1.0",
   "engines": {
     "node": ">=15"
   },
@@ -15,12 +15,12 @@
     "precommit": "lint-staged",
     "test": "npm run build && jest --forceExit",
     "prepare": "npm run build",
-    "start:debug": "npm run build && node ./bin/zo-flask.js --log-level=debug",
+    "start:debug": "npm run build && node ./bin/01-flask.js --log-level=debug",
     "format": "prettier --write .",
     "check-format": "prettier --check ."
   },
   "bin": {
-    "zo-flask": "bin/zo-flask.js"
+    "zo-flask": "bin/01-flask.js"
   },
   "files": [
     "src",
@@ -28,8 +28,8 @@
     "bin"
   ],
   "keywords": [
-    "serum dex",
-    "serum api",
+    "zo dex",
+    "zeroone api",
     "01 api",
     "01 dex",
     "api client",

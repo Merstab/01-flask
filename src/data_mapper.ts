@@ -1,8 +1,8 @@
-// import { Event, EVENT_QUEUE_LAYOUT } from '@zero_one/client/src/zoDex/queue'
+// import { Event, EVENT_QUEUE_LAYOUT } from '../node_modules/@zero_one/client/src/zoDex/queue'
 import { EVENT_QUEUE_LAYOUT } from '@project-serum/serum'
 import { Event } from '@project-serum/serum/lib/queue'
 import { PublicKey } from '@solana/web3.js'
-import { ZoMarket, Orderbook, EVENT_QUEUE_HEADER, decodeEventsSince } from '@zero_one/client'
+import { ZoMarket, Orderbook /*,EVENT_QUEUE_HEADER*/ } from '@zero_one/client'
 import BN from 'bn.js'
 import { CircularBuffer } from './helpers'
 import { logger } from './logger'
@@ -615,7 +615,7 @@ export class DataMapper {
         matchingLocalAsk.price !== ask.price ||
         matchingLocalAsk.size !== ask.size
       ) {
-        logger.log('warn', 'Bid order do not match', {
+        logger.log('warn', 'Ask order do not match', {
           market: this._options.symbol,
           localAsk: matchingLocalAsk,
           currentAsk: ask,
@@ -887,7 +887,7 @@ export class DataMapper {
     // if we don't have stored _lastSeenSeqNum it means it's first notification so let's just initialize _lastSeenSeqNum
 
     if (this._lastSeenSeqNum !== undefined) {
-      const allocLen = Math.floor((eventQueueData.length - EVENT_QUEUE_HEADER.span) / NODE.span)
+      const allocLen = Math.floor((eventQueueData.length - HEADER.span) / NODE.span)
 
       const newEventsCount = Math.min(header.seqNum - this._lastSeenSeqNum, allocLen - 1)
 

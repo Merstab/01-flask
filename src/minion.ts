@@ -174,8 +174,8 @@ class Minion {
                 quoteCurrency: 'USDC',
                 address: market.address,
                 programId: market.programId,
-                // baseMintAddress: baseMintAddress.toBase58(), // zo market return undefined
-                // quoteMintAddress: quoteMintAddress.toBase58(), // zo market returns undefied
+                // baseMintAddress: baseMintAddress.toBase58(), // undefined
+                // quoteMintAddress: quoteMintAddress.toBase58(), // undefied
                 tickSize,
                 minOrderSize
                 // version: getLayoutVersion(programId),
@@ -197,7 +197,6 @@ class Minion {
       res.writeStatus('200 OK')
       res.writeHeader('Content-Type', 'application/json')
       res.end(this._cachedListMarketsResponse)
-      // res.end(JSON.stringify(some))
     }
   }
 

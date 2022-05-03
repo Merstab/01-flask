@@ -9,7 +9,7 @@ const DEFAULT_PORT = 8000
 const DEFAULT_NODE_ENDPOINT = 'https://solana-api.projectserum.com'
 
 const argv = yargs
-  .scriptName('zo-flask')
+  .scriptName('01-flask')
   .env('SV_')
   .strict()
 

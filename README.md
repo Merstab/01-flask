@@ -54,13 +54,13 @@ ws.onopen = () => {
   const subscribeTrades = {
     op: 'subscribe',
     channel: 'trades',
-    markets: ['BTC-PERP']
+    markets: ['SOL-PERP']
   }
 
   const subscribeL2 = {
     op: 'subscribe',
     channel: 'level2',
-    markets: ['BTC-PERP']
+    markets: ['SOL-PERP']
   }
 
   ws.send(JSON.stringify(subscribeTrades))
@@ -161,7 +161,7 @@ Run `npx 01-flask --help` to see all available startup options.
 
 ### Docker
 
-<!-- Pulls and runs latest version of [`tardisdev/01-flask` Docker Image](https://hub.docker.com/r/tardisdev/01-flask) on port `8000`.
+<!-- Pulls and runs latest version of [`Merstab/01-flask` Docker Image](https://hub.docker.com/r/tardisdev/01-flask) on port `8000`.
 
 ```sh
 docker run -p 8000:8000 -d tardisdev/01-flask:latest
@@ -223,8 +223,8 @@ const ws = new WebSocket('ws://localhost:8000/v1/ws')
 ws.onopen = () => {
   const subscribeL2 = {
     op: 'subscribe',
-    channel: 'trades',
-    markets: ['BTC/USDC']
+    channel: 'level2',
+    markets: ['SOL-PERP']
   }
 
   ws.send(JSON.stringify(subscribeL2))
@@ -252,7 +252,7 @@ ws.onopen = () => {
 {
   "op": "subscribe",
   "channel": "level2",
-  "markets": ["BTC-PERP"]
+  "markets": ["SOL-PERP"]
 }
 ```
 
@@ -277,8 +277,8 @@ Once a subscription (or unsubscription) request is processed by the server, it w
 {
   "type": "subscribed",
   "channel": "level2",
-  "markets": ["BTC-PERP"],
-  "timestamp": "2021-03-23T17:06:30.010Z"
+  "markets": ["SOL-PERP"],
+  "timestamp": "2022-05-03T06:23:26.465Z"
 }
 ```
 
@@ -382,7 +382,7 @@ Up to 100 recent trades pushed immediately after successful subscription confirm
 ```json
 {
   "type": "recent_trades",
-  "market": "BTC-PERP",
+  "market": "SOL-PERP",
   "timestamp": "2021-03-24T07:05:27.377Z",
   "trades": [
     {
@@ -390,7 +390,6 @@ Up to 100 recent trades pushed immediately after successful subscription confirm
       "market": "SOL-PERP",
       "timestamp": "2021-12-23T14:31:16.733Z",
       "slot": 112915164,
-      // "version": 3,
       "id": "3313016788894161792503559|3313035235638235438412464",
       "side": "sell",
       "price": "179.599",
@@ -448,7 +447,6 @@ Pushed real-time for each trade as it happens on a DEX (decoded from the `eventQ
   "market": "SOL-PERP",
   "timestamp": "2021-12-23T14:31:16.733Z",
   "slot": 112915164,
-  // "version": 3,
   "id": "3313016788894161792503559|3313035235638235438412464",
   "side": "sell",
   "price": "179.599",
@@ -489,12 +487,11 @@ Pushed real-time for any change in best bid/ask price or size for a given market
 ```json
 {
   "type": "quote",
-  "market": "BTC-PERP",
-  "timestamp": "2021-03-24T07:11:57.186Z",
-  "slot": 70544253,
-  // "version": 3,
-  "bestAsk": ["55336.1", "5.0960"],
-  "bestBid": ["55285.6", "7.5000"]
+  "market": "SOL-PERP",
+  "timestamp": "2022-05-03T06:30:57.534Z",
+  "slot": 132269778,
+  "bestAsk": ["88.66", "0.01"],
+  "bestBid": ["88.49", "193.58"]
 }
 ```
 
@@ -527,19 +524,18 @@ Entire up-to-date order book snapshot with orders aggregated by price level push
 ```json
 {
   "type": "l2snapshot",
-  "market": "BTC-PERP",
-  "timestamp": "2021-03-24T09:00:53.087Z",
-  "slot": 70555623,
-  // "version": 3,
+  "market": "SOL-PERP",
+  "timestamp": "2022-05-03T06:23:25.202Z",
+  "slot": 132269086,
   "asks": [
-    ["56463.3", "8.6208"],
-    ["56474.3", "5.8632"],
-    ["56496.4", "3.7627"]
+    ["88.57", "402.43"],
+    ["88.58", "223.18"],
+    ["88.62", "374.10"]
   ],
   "bids": [
-    ["56386.0", "4.8541"],
-    ["56370.1", "6.8054"],
-    ["56286.3", "8.6631"]
+    ["88.47", "360.14"],
+    ["88.43", "238.54"],
+    ["88.41", "329.56"]
   ]
 }
 ```
@@ -573,15 +569,11 @@ Pushed real-time for any change to the order book for a given market with update
 ```json
 {
   "type": "l2update",
-  "market": "BTC-USDC",
-  "timestamp": "2021-03-24T09:00:55.586Z",
-  "slot": 70555627,
-  // "version": 3,
-  "asks": [["56511.5", "7.5000"]],
-  "bids": [
-    ["56421.6", "0.0000"],
-    ["56433.6", "5.9475"]
-  ]
+  "market": "SOL-PERP",
+  "timestamp": "2022-05-03T06:23:37.043Z",
+  "slot": 132269109,
+  "asks": [["88.58", "0.00"]],
+  "bids": [["88.47", "0.00"]]
 }
 ```
 
@@ -636,32 +628,31 @@ Entire up-to-date order book snapshot with **all individual orders** pushed imme
 ```json
 {
   "type": "l3snapshot",
-  "market": "BTC-PERP",
-  "timestamp": "2021-03-24T09:49:51.070Z",
-  "slot": 70560748,
-  // "version": 3,
+  "market": "SOL-PERP",
+  "timestamp": "2022-05-03T05:49:54.373Z",
+  "slot": 132265771,
   "asks": [
     {
-      "orderId": "10430028906948338708824594",
-      "clientId": "13065347387987527730",
+      "orderId": "163216791564182114193437",
+      "clientId": "4188332214832328",
       "side": "sell",
-      "price": "56541.3",
-      "size": "4.9049",
-      "account": "EXkXcPkqFwqJPXpJdTHMdvmLE282PRShqwMTteWcfz85",
-      "accountSlot": 8,
-      "feeTier": 3
+      "price": "88.48",
+      "size": "1370.25",
+      "account": "3z5HfN7PtvCNLwcNrwWWPrD4JpByNJxfwKoWv1rsV6ro",
+      "accountSlot": 20,
+      "feeTier": 0
     }
   ],
   "bids": [
     {
-      "orderId": "10414533641926422683532775",
-      "clientId": "1616579378239885365",
+      "orderId": "163143004587887272996795",
+      "clientId": "2730876439674435",
       "side": "buy",
-      "price": "56457.2",
-      "size": "7.5000",
-      "account": "6Yqus2UYf1wSaKBE4GSLeE2Ge225THeyPcgWBaoGzx3e",
-      "accountSlot": 10,
-      "feeTier": 6
+      "price": "88.43",
+      "size": "186.84",
+      "account": "3z5HfN7PtvCNLwcNrwWWPrD4JpByNJxfwKoWv1rsV6ro",
+      "accountSlot": 37,
+      "feeTier": 0
     }
   ]
 }
@@ -696,18 +687,17 @@ Pushed real-time for every new order opened on the limit order book (decoded fro
 ```json
 {
   "type": "open",
-  "market": "BTC-PERP",
-  "timestamp": "2021-03-24T10:14:33.967Z",
-  "slot": 70563387,
-  // "version": 3,
-  "orderId": "10395754856459386361922812",
-  "clientId": "1616580865182472471",
-  "side": "sell",
-  "price": "56355.5",
-  "size": "7.5000",
-  "account": "6Yqus2UYf1wSaKBE4GSLeE2Ge225THeyPcgWBaoGzx3e",
-  "accountSlot": 6,
-  "feeTier": 6
+  "market": "SOL-PERP",
+  "timestamp": "2022-05-03T05:53:15.475Z",
+  "slot": 132266095,
+  "orderId": "162294454360496633622415",
+  "clientId": "3369934981100872",
+  "side": "buy",
+  "price": "87.97",
+  "size": "2426.12",
+  "account": "3z5HfN7PtvCNLwcNrwWWPrD4JpByNJxfwKoWv1rsV6ro",
+  "accountSlot": 81,
+  "feeTier": 0
 }
 ```
 
@@ -742,16 +732,15 @@ Pushed real-time anytime order size changes as a result of self-trade prevention
 ```json
 {
   "type": "change",
-  "market": "BTC-USDC",
-  "timestamp": "2021-03-24T10:25:21.739Z",
-  "slot": 70564525,
-  // "version": 3,
+  "market": "SOL-PERP",
+  "timestamp": "2022-05-03T06:52:20.141Z",
+  "slot": 132266103,
   "orderId": "10352165200213210691454558",
   "clientId": "15125925100673159264",
   "side": "sell",
-  "price": "56119.2",
+  "price": "86.20",
   "size": "8.4494",
-  "account": "EXkXcPkqFwqJPXpJdTHMdvmLE282PRShqwMTteWcfz85",
+  "account": "3z5HfN7PtvCNLwcNrwWWPrD4JpByNJxfwKoWv1rsV6ro",
   "accountSlot": 6,
   "feeTier": 3
 }
@@ -792,20 +781,19 @@ Pushed real-time anytime trade happens (decoded from the `eventQueue` accounts).
 ```json
 {
   "type": "fill",
-  "market": "BTC-PERP",
-  "timestamp": "2021-03-24T11:27:21.739Z",
-  "slot": 70564527,
-  // "version": 3,
-  "orderId": "1035216520046710691454558",
-  "clientId": "151259251006473159264",
-  "side": "sell",
-  "price": "56119.2",
-  "size": "8.4494",
+  "market": "SOL-PERP",
+  "timestamp": "2022-05-03T05:52:20.141Z",
+  "slot": 132266003,
+  "orderId": "163364365516771787616164",
+  "clientId": "3169423765462594",
+  "side": "buy",
+  "price": "88.50",
+  "size": "0.01",
   "maker": false,
-  "feeCost": 15.6,
-  "account": "EXkXcPkqFwqJPXpJdTHMdvmLE282PRShqwMTteWcfz85",
-  "accountSlot": 6,
-  "feeTier": 3
+  "feeCost": 0.000886,
+  "account": "3z5HfN7PtvCNLwcNrwWWPrD4JpByNJxfwKoWv1rsV6ro",
+  "accountSlot": 61,
+  "feeTier": 0
 }
 ```
 
@@ -846,16 +834,15 @@ Pushed real-time when the order is no longer on the order book (decoded from the
 {
   "type": "done",
   "market": "SOL-PERP",
-  "timestamp": "2021-11-16T12:29:12.180Z",
-  "slot": 107165458,
-  // "version": 3,
-  "orderId": "117413526029161279193704",
-  "clientId": "4796015225289787768",
+  "timestamp": "2022-05-03T05:53:21.177Z",
+  "slot": 132266104,
+  "orderId": "163235238308255820754858",
+  "clientId": "2722683401003912",
   "side": "buy",
   "reason": "canceled",
-  "account": "AqeHe31ZUDgEUSidkh3gEhkf7iPn8bSTJ6c8L9ymp8Vj",
-  "accountSlot": 0,
-  "sizeRemaining": "508.5"
+  "account": "3z5HfN7PtvCNLwcNrwWWPrD4JpByNJxfwKoWv1rsV6ro",
+  "accountSlot": 55,
+  "sizeRemaining": "500.66"
 }
 ```
 
@@ -905,11 +892,8 @@ Returns 01 Exchange markets list supported by 01-flask instance (it can be updat
     "name": "BTC-PERP",
     "baseCurrency": "BTC",
     "quoteCurrency": "USDC",
-    // "version": 3,
     "address": "A8YFbxQYFVqKZaoYJLLUVcQiWP7G2MeEgW5wsAQgMvFw",
     "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
-    // "baseMintAddress": "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E",
-    // "quoteMintAddress": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     "tickSize": 0.1,
     "minOrderSize": 0.0001
   }
