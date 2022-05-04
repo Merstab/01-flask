@@ -1,4 +1,7 @@
-// import { Event, EVENT_QUEUE_LAYOUT } from '../node_modules/@zero_one/client/src/zoDex/queue'
+// doesn't compile with typescript but exists in the zo-client.
+// Here: https://github.com/01protocol/zo-client/blob/ea38a2ba5cfdd53d62ce5e993f22113e83484f2f/src/zoDex/queue.ts#L43
+// used Serum implelemtation temporarily. this is the reason the program depends on @projectserum/serum
+// import { Event, EVENT_QUEUE_LAYOUT } from '@zero_one/client/src/zoDex/queue'
 import { EVENT_QUEUE_LAYOUT } from '@project-serum/serum'
 import { Event } from '@project-serum/serum/lib/queue'
 import { PublicKey } from '@solana/web3.js'
@@ -919,7 +922,7 @@ export class DataMapper {
       side,
       price,
       size,
-      account,
+      account, // Zo Control
       accountSlot,
       feeTier
       // version: this._version
@@ -948,7 +951,7 @@ export class DataMapper {
       side: isBids ? 'buy' : 'sell',
       price,
       size,
-      account: control.toBase58(),
+      account: control.toBase58(), // Zo Control
       accountSlot: ownerSlot,
       feeTier
     }
@@ -968,7 +971,7 @@ function divideBnToNumber(numerator: BN, denominator: BN): number {
 type SlabItem = {
   ownerSlot: number
   key: BN
-  control: PublicKey
+  control: PublicKey // Zo Control
   quantity: BN
   feeTier: number
   clientOrderId: BN

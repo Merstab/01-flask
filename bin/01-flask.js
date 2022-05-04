@@ -58,6 +58,7 @@ const argv = yargs
     default: 500
   })
 
+  //added cluster option to select the cluster to get perp markets from
   .option('cluster', {
     type: 'string',
     describe: 'Solana cluster to connect to',

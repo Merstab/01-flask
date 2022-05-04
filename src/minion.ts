@@ -169,7 +169,8 @@ class Minion {
               const [baseCurrency, type] = market.symbol.split('-')
 
               const zoMarket: ZoListMarketItem = {
-                name: market.name, // replace with symbol market.symbol
+                name: market.name,
+                // has a special market called a Square market e.g SOL-SQUARE
                 baseCurrency: type === 'PERP' ? baseCurrency! : market.symbol,
                 quoteCurrency: 'USDC',
                 address: market.address,

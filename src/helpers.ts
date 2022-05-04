@@ -121,6 +121,7 @@ export async function executeAndRetry<T>(
   }
 }
 
+// takes cluster and endpoint to read market info from sdk as there is no hard data
 export async function getZoPerpMarkets(cluster: string, endpoint: string): Promise<ZoMarketInfo[]> {
   const connection = new Connection(endpoint)
   const provider = createProvider(connection, undefined!)
@@ -133,12 +134,12 @@ export async function getZoPerpMarkets(cluster: string, endpoint: string): Promi
   const zoState = await State.load(zoProgram, zoStateKey)
 
   if (zoState !== undefined && Object.keys(zoState.markets).length === 0) {
-    throw new Error(`Invalid Arguments`)
+    throw new Error(`Invalid Arguments`) // need better error message
   }
 
   return (
     Object.values(zoState.markets)
-      // .filter((m) => m.marketType == 0)
+      // .filter((m) => m.marketType == 0) // there is a special perp market called Square with type 5
       .map((market) => {
         return {
           name: market.symbol,

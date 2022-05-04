@@ -3,7 +3,7 @@ import path from 'path'
 import { Worker } from 'worker_threads'
 import { cleanupChannel, minionReadyChannel, zoProducerReadyChannel, wait } from './helpers'
 import { logger } from './logger'
-import { ZoMarketInfo } from './types' //Replace with ZoMarketInfo
+import { ZoMarketInfo } from './types'
 
 export async function bootServer({
   port,

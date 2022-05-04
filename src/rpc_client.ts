@@ -199,8 +199,8 @@ class AccountsChangeNotifications {
       {
         name: 'eventQueue',
         reqId: 3000,
-        // address: market.eventQueueAddress.toBase58()
-        address: (market as any)._decoded.eventQueue.toBase58()
+        address: market.eventQueueAddress.toBase58()
+        // address: (market as any)._decoded.eventQueue.toBase58()
       }
     ]
     this._connectAndStreamData()

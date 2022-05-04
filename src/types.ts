@@ -82,7 +82,7 @@ export type OrderItem = {
   readonly side: 'buy' | 'sell'
   readonly orderId: string
   readonly clientId: string
-  readonly account: string
+  readonly account: string // Zo Control
   readonly accountSlot: number
   readonly feeTier: number
 }
