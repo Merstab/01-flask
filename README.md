@@ -96,7 +96,7 @@ Since by default 01-flask uses [`confirmed` commitment level](https://docs.solan
 
 Trade data is published faster since by default DEX UI is pooling `eventQueue` account data on interval due to it's size (> 1MB), and 01-flask uses real-time `eventQueue` account notification as a source for trade messages which aren't delayed by pooling interval time.
 
-[![See 01-flask backed DEX](https://img.shields.io/badge/-See%20Demo%20DEX%20UI-c?color=05aac5)](https://01-flask.dev/)
+<!-- [![See 01-flask backed DEX](https://img.shields.io/badge/-See%20Demo%20DEX%20UI-c?color=05aac5)](https://01-flask.dev/) -->
 
 <br/>
 <br/>
@@ -125,7 +125,7 @@ npx 01-flask
 If you'd like to switch to different Solana RPC node endpoint like for example local one, change port or run with debug logs enabled, just add one of the available CLI options.
 
 ```sh
-npx 01-flask --endpoint http://localhost:8090 --ws-endpoint-port 8899 --log-level debug --port 8900
+npx 01-flask --endpoint https://api.devnet.solana.com --ws-endpoint-port 8899 --log-level debug --port 8900
 ```
 
 Alternatively you can install 01-flask globally.
@@ -173,20 +173,21 @@ docker run -p 8000:8000 -e "SV_LOG_LEVEL=debug" -d tardisdev/01-flask:latest
 
 <br/>
 
-#### ENV Variables
+<!-- #### ENV Variables
 
 | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | default                   | description                                                                                                                                                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ZOF_PORT`                                                                                                                                                                                                                                                                                              | 8000                      | Port to bind server on                                                                                                                                                                             |
-| `ZOF_ENDPOINT`                                                                                                                                                                                                                                                                                          | https://solana-api.01.xyz | Solana RPC node endpoint that 01-flask uses as a data source                                                                                                                                       |
+| `ZOF_ENDPOINT`                                                                                                                                                                                                                                                                                          | https://solana-api.projectserum.com | Solana RPC node endpoint that 01-flask uses as a data source                                                                                                                                       |
 | `ZOF_WS_ENDPOINT_PORT`                                                                                                                                                                                                                                                                                  | -                         | Optional Solana RPC WS node endpoint port that 01-flask uses as a data source (if different than REST endpoint port) source                                                                        |
 | `ZOF_LOG_LEVEL`                                                                                                                                                                                                                                                                                         | info                      | Log level, available options: debug, info, warn and error                                                                                                                                          |
 | `ZOF_MINIONS_COUNT`                                                                                                                                                                                                                                                                                     | 1                         | [Minions worker threads](#architecture) count that are responsible for broadcasting normalized WS messages to connected clients                                                                    |
+| `ZOF_BOOT_DELAY`                                                                                                                                                                                                                                                                                     | 500                         | Staggered boot delay in milliseconds so public RPC nodes do not rate limit 01-flask                                                                    |
 | `ZOF_COMMITMENT`                                                                                                                                                                                                                                                                                        | confirmed                 | [Solana commitment level](https://docs.solana.com/developing/clients/jsonrpc-api#configuring-state-commitment) to use when communicating with RPC node, available options: confirmed and processed |
 | `ZOF_CLUSTER`                                                                                                                                                                                                                                                                                           | `mainnet-beta`            | Solana cluster to connect to                                                                                                                                                                       |
 
 <br/>
-<br/>
+<br/> -->
 
 ### SSL/TLS Support
 
