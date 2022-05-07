@@ -906,5 +906,5 @@ Returns 01 Exchange markets list supported by 01-flask instance (it can be updat
 
 ## References
 
-tardis-dev [Mango-bowl](https://github.com/tardis-dev/mango-bowl)
-tardis-dev [Serum-vial](https://github.com/tardis-dev/serum-vial)
+- tardis-dev [Mango-bowl](https://github.com/tardis-dev/mango-bowl)
+- tardis-dev [Serum-vial](https://github.com/tardis-dev/serum-vial)
