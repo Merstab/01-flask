@@ -20,7 +20,7 @@
     "check-format": "prettier --check ."
   },
   "bin": {
-    "zo-flask": "bin/01-flask.js"
+    "01-flask": "bin/01-flask.js"
   },
   "files": [
     "src",
