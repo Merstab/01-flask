@@ -1,11 +1,10 @@
-// doesn't compile with typescript but exists in the zo-client.
+// EVENT_QUEUE_LAYOUT not exported by zo-client.
 // Here: https://github.com/01protocol/zo-client/blob/ea38a2ba5cfdd53d62ce5e993f22113e83484f2f/src/zoDex/queue.ts#L43
-// used Serum implelemtation temporarily. this is the reason the program depends on @projectserum/serum
-// import { Event, EVENT_QUEUE_LAYOUT } from '@zero_one/client/src/zoDex/queue'
+// used Serum implementation temporarily. this is the reason the program depends on @projectserum/serum
+import { Event } from '@zero_one/client/src/zoDex/queue'
 import { EVENT_QUEUE_LAYOUT } from '@project-serum/serum'
-import { Event } from '@project-serum/serum/lib/queue'
 import { PublicKey } from '@solana/web3.js'
-import { ZoMarket, Orderbook /*,EVENT_QUEUE_HEADER*/ } from '@zero_one/client'
+import { ZoMarket, Orderbook } from '@zero_one/client'
 import BN from 'bn.js'
 import { CircularBuffer } from './helpers'
 import { logger } from './logger'

@@ -39,10 +39,7 @@ Run the code snippet below in the browser Dev Tools directly or in Node.js
 <!-- (requires installation of `ws` lib, [see](https://runkit.com/thad/01-flask-node-js-sample)). -->
 
 ```js
-// connect to hosted server - not ready
-// const ws = new WebSocket('wss://api.01-flask.dev/v1/ws')
-
-// if connecting to 01-flask server running locally
+// connect to 01-flask server running locally
 const ws = new WebSocket('ws://localhost:8000/v1/ws')
 
 ws.onmessage = (message) => {
@@ -149,6 +146,7 @@ npm install -g 01-flask
 | `ws-endpoint-port`                                                                                                                                                                                                                                                                                      | -                                   | Optional Solana RPC WS node endpoint port that 01-flask uses as a data source (if different than REST endpoint port) source                                                                        |
 | `log-level`                                                                                                                                                                                                                                                                                             | info                                | Log level, available options: debug, info, warn and error                                                                                                                                          |
 | `minions-count`                                                                                                                                                                                                                                                                                         | 1                                   | [Minions worker threads](#architecture) count that are responsible for broadcasting normalized WS messages to connected clients                                                                    |
+| `boot-delay`                                                                                                                                                                                                                                                                                            | 500                                 | Staggered boot delay in milliseconds so public RPC nodes do not rate limit 01-flask                                                                                                                |
 | `commitment`                                                                                                                                                                                                                                                                                            | confirmed                           | [Solana commitment level](https://docs.solana.com/developing/clients/jsonrpc-api#configuring-state-commitment) to use when communicating with RPC node, available options: confirmed and processed |
 | `cluster`                                                                                                                                                                                                                                                                                               | `mainnet-beta`                      | Solana cluster to connect to                                                                                                                                                                       |
 
@@ -159,7 +157,7 @@ Run `npx 01-flask --help` to see all available startup options.
 <br/>
 <br/>
 
-### Docker
+<!-- ### Docker -->
 
 <!-- Pulls and runs latest version of [`Merstab/01-flask` Docker Image](https://hub.docker.com/r/tardisdev/01-flask) on port `8000`.
 
@@ -179,13 +177,13 @@ docker run -p 8000:8000 -e "SV_LOG_LEVEL=debug" -d tardisdev/01-flask:latest
 
 | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | default                   | description                                                                                                                                                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ZF_PORT`                                                                                                                                                                                                                                                                                               | 8000                      | Port to bind server on                                                                                                                                                                             |
-| `ZF_ENDPOINT`                                                                                                                                                                                                                                                                                           | https://solana-api.01.xyz | Solana RPC node endpoint that 01-flask uses as a data source                                                                                                                                       |
-| `ZF_WS_ENDPOINT_PORT`                                                                                                                                                                                                                                                                                   | -                         | Optional Solana RPC WS node endpoint port that 01-flask uses as a data source (if different than REST endpoint port) source                                                                        |
-| `ZF_LOG_LEVEL`                                                                                                                                                                                                                                                                                          | info                      | Log level, available options: debug, info, warn and error                                                                                                                                          |
-| `ZF_MINIONS_COUNT`                                                                                                                                                                                                                                                                                      | 1                         | [Minions worker threads](#architecture) count that are responsible for broadcasting normalized WS messages to connected clients                                                                    |
-| `ZF_COMMITMENT`                                                                                                                                                                                                                                                                                         | confirmed                 | [Solana commitment level](https://docs.solana.com/developing/clients/jsonrpc-api#configuring-state-commitment) to use when communicating with RPC node, available options: confirmed and processed |
-| `ZF_CLUSTER`                                                                                                                                                                                                                                                                                            | `mainnet-beta`            | Solana cluster to connect to                                                                                                                                                                       |
+| `ZOF_PORT`                                                                                                                                                                                                                                                                                              | 8000                      | Port to bind server on                                                                                                                                                                             |
+| `ZOF_ENDPOINT`                                                                                                                                                                                                                                                                                          | https://solana-api.01.xyz | Solana RPC node endpoint that 01-flask uses as a data source                                                                                                                                       |
+| `ZOF_WS_ENDPOINT_PORT`                                                                                                                                                                                                                                                                                  | -                         | Optional Solana RPC WS node endpoint port that 01-flask uses as a data source (if different than REST endpoint port) source                                                                        |
+| `ZOF_LOG_LEVEL`                                                                                                                                                                                                                                                                                         | info                      | Log level, available options: debug, info, warn and error                                                                                                                                          |
+| `ZOF_MINIONS_COUNT`                                                                                                                                                                                                                                                                                     | 1                         | [Minions worker threads](#architecture) count that are responsible for broadcasting normalized WS messages to connected clients                                                                    |
+| `ZOF_COMMITMENT`                                                                                                                                                                                                                                                                                        | confirmed                 | [Solana commitment level](https://docs.solana.com/developing/clients/jsonrpc-api#configuring-state-commitment) to use when communicating with RPC node, available options: confirmed and processed |
+| `ZOF_CLUSTER`                                                                                                                                                                                                                                                                                           | `mainnet-beta`            | Solana cluster to connect to                                                                                                                                                                       |
 
 <br/>
 <br/>
@@ -353,7 +351,7 @@ Markets supported by 01-flask server can be queried via [`GET /markets`](#get-ma
 
 - `slot` is a [Solana's slot](https://docs.solana.com/terminology#slot) number for which message has produced
 
-- `version` of 01 Exchange program layout (DEX version)
+<!-- - `version` of 01 Exchange program layout (DEX version) -->
 
 - `price` and `size` are provided as strings to preserve precision
 
@@ -423,7 +421,6 @@ Pushed real-time for each trade as it happens on a DEX (decoded from the `eventQ
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "id": string,
   "side": "buy" | "sell",
   "price": string,
@@ -476,7 +473,6 @@ Pushed real-time for any change in best bid/ask price or size for a given market
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "bestAsk": [price: string, size: string] | undefined,
   "bestBid": [price: string, size: string] | undefined
 }
@@ -513,7 +509,6 @@ Entire up-to-date order book snapshot with orders aggregated by price level push
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "asks": [price: string, size: string][],
   "bids": [price: string, size: string][]
 }
@@ -558,7 +553,6 @@ Pushed real-time for any change to the order book for a given market with update
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "asks": [price: string, size: string][],
   "bids": [price: string, size: string][]
 }
@@ -599,7 +593,6 @@ Entire up-to-date order book snapshot with **all individual orders** pushed imme
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "asks": {
     "price": string,
     "size": string,
@@ -670,7 +663,6 @@ Pushed real-time for every new order opened on the limit order book (decoded fro
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "orderId": string,
   "clientId": string,
   "side": "buy" | "sell",
@@ -715,7 +707,6 @@ Pushed real-time anytime order size changes as a result of self-trade prevention
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "orderId": string,
   "clientId": string,
   "side": "buy" | "sell",
@@ -762,7 +753,6 @@ Pushed real-time anytime trade happens (decoded from the `eventQueue` accounts).
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "orderId": string,
   "clientId": string,
   "side": "buy" | "sell",
@@ -817,7 +807,6 @@ Pushed real-time when the order is no longer on the order book (decoded from the
   "market": string,
   "timestamp": string,
   "slot": number,
-  // "version": number,
   "orderId": string,
   "clientId": string,
   "side": "buy" | "sell",
@@ -874,11 +863,8 @@ Returns 01 Exchange markets list supported by 01-flask instance (it can be updat
   "name": string,
   "baseMintAddress": string,
   "quoteMintAddress": string,
-  // "version": number,
   "address": string,
   "programId": string,
-  // "baseCurrency": string,
-  // "quoteCurrency": string,
   "tickSize": number,
   "minOrderSize": number,
 }[]
@@ -889,11 +875,11 @@ Returns 01 Exchange markets list supported by 01-flask instance (it can be updat
 ```json
 [
   {
-    "name": "BTC-PERP",
-    "baseCurrency": "BTC",
+    "name": "SOL-PERP",
+    "baseCurrency": "SOL",
     "quoteCurrency": "USDC",
-    "address": "A8YFbxQYFVqKZaoYJLLUVcQiWP7G2MeEgW5wsAQgMvFw",
-    "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
+    "address": "EqZrg5VzrJdBs9EnUBURXJMyhHZ5A4YeX57g62Uufk8w",
+    "programId": "ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK",
     "tickSize": 0.1,
     "minOrderSize": 0.0001
   }
@@ -903,13 +889,13 @@ Returns 01 Exchange markets list supported by 01-flask instance (it can be updat
 <br/>
 <br/>
 
-## Architecture
+<!-- ## Architecture
 
 ![architecture diagram](https://user-images.githubusercontent.com/51779538/112750634-f4037d80-8fc9-11eb-8ce3-a0798b6790e8.png)
 
 <br/>
-<br/>
+<br/> -->
 
 ## Credits
 
-<!-- ##### This project was possible thanks to [eco01 Grant](https://01.xyz/grants). -->
+##### This project was possible thanks to [01 Exchange Grant](https://01exchange.notion.site/01-Exchange-Grants-Program-ecbab6fde93843caa6924fb5cda3b79e).

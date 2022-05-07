@@ -54,7 +54,7 @@ const argv = yargs
 
   .option('boot-delay', {
     type: 'string',
-    describe: 'Staggered boot delay in milliseconds so public RPC nodes do not rate limit zo-flask',
+    describe: 'Staggered boot delay in milliseconds so public RPC nodes do not rate limit 01-flask',
     default: 500
   })
 

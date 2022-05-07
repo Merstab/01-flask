@@ -13,8 +13,7 @@ export async function bootServer({
   markets, // ZoMarketInfo[]
   commitment,
   bootDelay
-}: // cluster
-BootOptions) {
+}: BootOptions) {
   // multi core support is linux only feature which allows multiple threads to bind to the same port
   // see https://github.com/uNetworking/uWebSockets.js/issues/304 and https://lwn.net/Articles/542629/
   const MINIONS_COUNT = os.platform() === 'linux' ? minionsCount : 1

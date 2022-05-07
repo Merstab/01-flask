@@ -4,13 +4,11 @@ import { bootServer, stopServer, DataMessage, ZoListMarketItem, SubRequest, Succ
 import { wait } from '../dist/helpers'
 
 const PORT = 8989
-const TIMEOUT = 60 * 1000
+const TIMEOUT = 120 * 1000
 const WS_ENDPOINT = `ws://localhost:${PORT}/v1/ws`
 
 async function fetchMarkets() {
   const response = await fetch(`http://localhost:${PORT}/v1/markets`)
-
-  // console.log(await response.json())
 
   return (await response.json()) as ZoListMarketItem[]
 }
@@ -26,13 +24,13 @@ describe('serum-vial', () => {
           symbol: 'BTC-PERP',
           name: 'BTC-PERP',
           programId: 'ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK'
-        },
-        {
-          address: 'EqZrg5VzrJdBs9EnUBURXJMyhHZ5A4YeX57g62Uufk8w',
-          symbol: 'SOL-PERP',
-          name: 'SOL-PERP',
-          programId: 'ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK'
         }
+        // ,{
+        //   address: 'EqZrg5VzrJdBs9EnUBURXJMyhHZ5A4YeX57g62Uufk8w',
+        //   symbol: 'SOL-PERP',
+        //   name: 'SOL-PERP',
+        //   programId: 'ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK'
+        // }
       ],
       minionsCount: 1,
       nodeEndpoint: 'https://solana-api.projectserum.com',
@@ -83,12 +81,12 @@ describe('serum-vial', () => {
         }
 
         messagesCount++
-        if (messagesCount == 2) {
+        if (messagesCount == 1) {
           break
         }
       }
 
-      expect(messagesCount).toBe(2)
+      expect(messagesCount).toBe(1)
       expect(receivedSubscribed).toBe(true)
       expect(receivedRecentTrades).toBe(true)
     },
@@ -122,12 +120,12 @@ describe('serum-vial', () => {
         }
 
         l1MessagesCount++
-        if (l1MessagesCount == 10) {
+        if (l1MessagesCount == 2) {
           break
         }
       }
 
-      expect(l1MessagesCount).toBe(10)
+      expect(l1MessagesCount).toBe(2)
       expect(receivedSubscribed).toBe(true)
       expect(receivedQuoteMessage).toBe(true)
     },
@@ -161,12 +159,12 @@ describe('serum-vial', () => {
         }
 
         l2MessagesCount++
-        if (l2MessagesCount == 10) {
+        if (l2MessagesCount == 2) {
           break
         }
       }
 
-      expect(l2MessagesCount).toBe(10)
+      expect(l2MessagesCount).toBe(2)
       expect(receivedSnapshot).toBe(true)
       expect(receivedSubscribed).toBe(true)
     },
