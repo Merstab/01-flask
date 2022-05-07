@@ -900,3 +900,11 @@ Returns 01 Exchange markets list supported by 01-flask instance (it can be updat
 ## Credits
 
 ##### This project was possible thanks to [01 Exchange Grant](https://01exchange.notion.site/01-Exchange-Grants-Program-ecbab6fde93843caa6924fb5cda3b79e).
+
+<br/>
+<br/>
+
+## References
+
+tardis-dev [Mango-bowl](https://github.com/tardis-dev/mango-bowl)
+tardis-dev [Serum-vial](https://github.com/tardis-dev/serum-vial)
