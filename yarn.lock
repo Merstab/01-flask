@@ -4332,9 +4332,9 @@ typescript@^4.6.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.3.tgz#eefeafa6afdd31d725584c67a0eaba80f6fc6c6c"
   integrity sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==
 
-"uWebSockets.js@git+https://git@github.com/uNetworking/uWebSockets.js.git#v20.6.0":
-  version "20.6.0"
-  resolved "git+https://git@github.com/uNetworking/uWebSockets.js.git#a58e810e47a23696410f6073c8c905dc38f75da5"
+"uWebSockets.js@git+https://git@github.com/uNetworking/uWebSockets.js.git#v20.9.0":
+  version "20.9.0"
+  resolved "git+https://git@github.com/uNetworking/uWebSockets.js.git#404593bbe701e460413e3036df9f4cf9c92362ba"
 
 universalify@^0.1.2:
   version "0.1.2"
