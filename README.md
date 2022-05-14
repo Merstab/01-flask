@@ -40,29 +40,29 @@ Run the code snippet below in the browser Dev Tools directly or in Node.js
 
 ```js
 // connect to 01-flask server running locally
-const ws = new WebSocket('ws://localhost:8000/v1/ws')
+const ws = new WebSocket("ws://localhost:8000/v1/ws");
 
 ws.onmessage = (message) => {
-  console.log(JSON.parse(message.data))
-}
+  console.log(JSON.parse(message.data));
+};
 
 ws.onopen = () => {
   // subscribe both to trades and level2 real-time channels
   const subscribeTrades = {
-    op: 'subscribe',
-    channel: 'trades',
-    markets: ['SOL-PERP']
-  }
+    op: "subscribe",
+    channel: "trades",
+    markets: ["SOL-PERP"],
+  };
 
   const subscribeL2 = {
-    op: 'subscribe',
-    channel: 'level2',
-    markets: ['SOL-PERP']
-  }
+    op: "subscribe",
+    channel: "level2",
+    markets: ["SOL-PERP"],
+  };
 
-  ws.send(JSON.stringify(subscribeTrades))
-  ws.send(JSON.stringify(subscribeL2))
-}
+  ws.send(JSON.stringify(subscribeTrades));
+  ws.send(JSON.stringify(subscribeL2));
+};
 ```
 
 <!-- [![Try this code live on RunKit](https://img.shields.io/badge/-Try%20this%20code%20live%20on%20RunKit-c?color=05aac5)](https://runkit.com/thad/01-exchange-node-js-sample) -->
@@ -217,17 +217,17 @@ To begin receiving real-time market data feed messages, you must first send a su
 If you want to unsubscribe from channel and markets, send an unsubscribe message. The structure is equivalent to subscribe messages except `op` field which should be set to `"op": "unsubscribe"`.
 
 ```js
-const ws = new WebSocket('ws://localhost:8000/v1/ws')
+const ws = new WebSocket("ws://localhost:8000/v1/ws");
 
 ws.onopen = () => {
   const subscribeL2 = {
-    op: 'subscribe',
-    channel: 'level2',
-    markets: ['SOL-PERP']
-  }
+    op: "subscribe",
+    channel: "level2",
+    markets: ["SOL-PERP"],
+  };
 
-  ws.send(JSON.stringify(subscribeL2))
-}
+  ws.send(JSON.stringify(subscribeL2));
+};
 ```
 
 <br/>

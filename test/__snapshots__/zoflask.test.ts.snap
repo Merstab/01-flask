@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`01-flask HTTP GET /markets 1`] = `
+Array [
+  Object {
+    "address": "8JbzKqa9CK85Po4PophvA5NkuKSacgEnZdhwW64pu4Vd",
+    "baseCurrency": "BTC",
+    "minOrderSize": 0.0001,
+    "name": "BTC-PERP",
+    "programId": "ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK",
+    "quoteCurrency": "USDC",
+    "tickSize": 0.1,
+  },
+]
+`;
+
 exports[`serum-vial HTTP GET /markets 1`] = `
 Array [
   Object {

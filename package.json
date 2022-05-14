@@ -8,8 +8,8 @@
   "main": "dist/index.js",
   "source": "src/index.js",
   "types": "dist/index.d.ts",
-  "repository": "Merstab/01-flask",
-  "homepage": "https://github.com/Merstab/01-flask",
+  "repository": "merstab/01-flask",
+  "homepage": "https://github.com/merstab/01-flask",
   "scripts": {
     "build": "tsc",
     "precommit": "lint-staged",
@@ -82,4 +82,3 @@
     "testEnvironment": "node"
   }
 }
-
