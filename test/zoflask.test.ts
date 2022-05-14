@@ -199,12 +199,12 @@ describe("01-flask", () => {
         }
 
         l3MessagesCount++;
-        if (l3MessagesCount == 20) {
+        if (l3MessagesCount == 10) {
           break;
         }
       }
 
-      expect(l3MessagesCount).toBe(20);
+      expect(l3MessagesCount).toBe(10);
       expect(receivedSubscribed).toBe(true);
       expect(receivedSnapshot).toBe(true);
     },
