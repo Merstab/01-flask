@@ -81,7 +81,7 @@ describe("01-flask", () => {
         }
 
         messagesCount++;
-        if (messagesCount == 1) {
+        if (messagesCount == 2) {
           break;
         }
       }
