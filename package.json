@@ -17,7 +17,7 @@
     "prepare": "npm run build",
     "start:debug": "npm run build && node ./bin/01-flask.js --log-level=debug",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check src/"
   },
   "bin": {
     "01-flask": "bin/01-flask.js"
