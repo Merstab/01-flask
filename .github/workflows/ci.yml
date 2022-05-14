@@ -21,6 +21,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install -g yarn
+      - run: yarn add --dev --exact prettier
       - run: yarn check-format
       - run: yarn build
       - run: yarn test
