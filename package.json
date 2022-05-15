@@ -13,7 +13,7 @@
   "scripts": {
     "build": "tsc",
     "precommit": "lint-staged",
-    "test": "npm run build && jest --forceExit",
+    "test": "npm run build && jest --ci --coverage --silent --forceExit",
     "prepare": "npm run build",
     "start:debug": "npm run build && node ./bin/01-flask.js --log-level=debug",
     "format": "prettier --write .",

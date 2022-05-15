@@ -24,4 +24,4 @@ jobs:
       - run: yarn add --dev --exact prettier
       - run: yarn check-format
       - run: yarn build
-      - run: yarn test
+      # - run: yarn test
