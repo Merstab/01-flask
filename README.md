@@ -1,8 +1,5 @@
 <img src="/01-Flask-Banner.svg">
 
-<!-- [![Version](https://img.shields.io/npm/v/01-flask.svg?color=05aac5)](https://www.npmjs.org/package/01-flask)
-[![Docker version](https://img.shields.io/docker/v/tardisdev/01-flask/latest?label=Docker&color=05aac5)](https://hub.docker.com/r/tardisdev/01-flask) -->
-
 # 01-Flask: real-time WS market data API for 01 Exchange
 
 <br/>
@@ -27,16 +24,12 @@ We all know that 01 Exchange is awesome, but since it's a new ecosystem, tooling
 
 01-flask provides real-time market data only and does not include endpoints for placing/canceling or tracking own orders as that requires handling private keys which is currently out of scope of this project.
 
-<!-- // text needs to be changed "Both [01-rest-server](https://github.com/01/01-rest-server) and [@01_exchange/01](https://github.com/01_exchange/01-ts/tree/master/packages/01) provide such functionality and are recommended alternatives." -->
-
 <br/>
 <br/>
 
 ## Getting started
 
 Run the code snippet below in the browser Dev Tools directly or in Node.js
-
-<!-- (requires installation of `ws` lib, [see](https://runkit.com/thad/01-flask-node-js-sample)). -->
 
 ```js
 // connect to 01-flask server running locally
@@ -65,38 +58,12 @@ ws.onopen = () => {
 };
 ```
 
-<!-- [![Try this code live on RunKit](https://img.shields.io/badge/-Try%20this%20code%20live%20on%20RunKit-c?color=05aac5)](https://runkit.com/thad/01-exchange-node-js-sample) -->
-
 <br/>
 <br/>
-
-<!-- ## Using public hosted server
-
-text needs to be changed: "01-flask public hosted WebSocket server (backed by 01 Exchange RPC node) is available at:"
-
-<br/>
-
-[wss://api.01-flask.dev/v1/ws](wss://api.01-flask.dev/v1/ws)
-
-<br/>
-
-This public server is maintained on best effort basis.
-
-<br/>
-
-01 Exchange UI backed by this public server (for it's trade and order book data feeds) is available at:
-
-<br/>
-
-[https://01-flask.dev](https://01-flask.dev/)
-
-<br/> -->
 
 Since by default 01-flask uses [`confirmed` commitment level](https://docs.solana.com/developing/clients/jsonrpc-api#configuring-state-commitment) for getting accounts notification from RPC node, it may sometimes feel slightly slower when it comes to order book updates vs default DEX UI which uses [`recent/processed` commitment](https://docs.solana.com/developing/clients/jsonrpc-api#configuring-state-commitment), but data is more accurate on the other hand.
 
 Trade data is published faster since by default DEX UI is pooling `eventQueue` account data on interval due to it's size (> 1MB), and 01-flask uses real-time `eventQueue` account notification as a source for trade messages which aren't delayed by pooling interval time.
-
-<!-- [![See 01-flask backed DEX](https://img.shields.io/badge/-See%20Demo%20DEX%20UI-c?color=05aac5)](https://01-flask.dev/) -->
 
 <br/>
 <br/>
@@ -119,19 +86,23 @@ For the best 01-flask data reliability it's advised to [set up a dedicated Solan
 Installs and starts 01-flask server running on port `8000`.
 
 ```sh
+npx ynpx 01-flask
+```
+or
+```sh
 npx 01-flask
 ```
 
-If you'd like to switch to different Solana RPC node endpoint like for example local one, change port or run with debug logs enabled, just add one of the available CLI options.
+If you'd like to switch to different Solana RPC node endpoint like for example devnet one, change port or run with debug logs enabled, just add one of the available CLI options.
 
 ```sh
-npx 01-flask --endpoint https://api.devnet.solana.com --ws-endpoint-port 8899 --log-level debug --port 8900
+npx ynpx 01-flask --cluster devnet --endpoint https://api.devnet.solana.com --ws-endpoint-port 8899 --log-level debug --port 8900
 ```
 
 Alternatively you can install 01-flask globally.
 
 ```sh
-npm install -g 01-flask
+yarn global add 01-flask
 01-flask
 ```
 
@@ -152,42 +123,10 @@ npm install -g 01-flask
 
 <br/>
 
-Run `npx 01-flask --help` to see all available startup options.
+Run `npx 01-flask --help` or `npx ynpx 01-flask --help` to see all available startup options.
 
 <br/>
 <br/>
-
-<!-- ### Docker -->
-
-<!-- Pulls and runs latest version of [`Merstab/01-flask` Docker Image](https://hub.docker.com/r/tardisdev/01-flask) on port `8000`.
-
-```sh
-docker run -p 8000:8000 -d tardisdev/01-flask:latest
-```
-
-If you'd like to switch to different Solana RPC node endpoint, change port or run with debug logs enabled, just specify those via one of the available env variables.
-
-```sh
-docker run -p 8000:8000 -e "SV_LOG_LEVEL=debug" -d tardisdev/01-flask:latest
-``` -->
-
-<br/>
-
-<!-- #### ENV Variables
-
-| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | default                   | description                                                                                                                                                                                        |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ZOF_PORT`                                                                                                                                                                                                                                                                                              | 8000                      | Port to bind server on                                                                                                                                                                             |
-| `ZOF_ENDPOINT`                                                                                                                                                                                                                                                                                          | https://solana-api.projectserum.com | Solana RPC node endpoint that 01-flask uses as a data source                                                                                                                                       |
-| `ZOF_WS_ENDPOINT_PORT`                                                                                                                                                                                                                                                                                  | -                         | Optional Solana RPC WS node endpoint port that 01-flask uses as a data source (if different than REST endpoint port) source                                                                        |
-| `ZOF_LOG_LEVEL`                                                                                                                                                                                                                                                                                         | info                      | Log level, available options: debug, info, warn and error                                                                                                                                          |
-| `ZOF_MINIONS_COUNT`                                                                                                                                                                                                                                                                                     | 1                         | [Minions worker threads](#architecture) count that are responsible for broadcasting normalized WS messages to connected clients                                                                    |
-| `ZOF_BOOT_DELAY`                                                                                                                                                                                                                                                                                     | 500                         | Staggered boot delay in milliseconds so public RPC nodes do not rate limit 01-flask                                                                    |
-| `ZOF_COMMITMENT`                                                                                                                                                                                                                                                                                        | confirmed                 | [Solana commitment level](https://docs.solana.com/developing/clients/jsonrpc-api#configuring-state-commitment) to use when communicating with RPC node, available options: confirmed and processed |
-| `ZOF_CLUSTER`                                                                                                                                                                                                                                                                                           | `mainnet-beta`            | Solana cluster to connect to                                                                                                                                                                       |
-
-<br/>
-<br/> -->
 
 ### SSL/TLS Support
 
@@ -205,8 +144,6 @@ WebSocket API provides real-time market data feeds of 01 Exchange and uses a bid
 ### Endpoint URL
 
 - **[ws://localhost:8000/v1/ws](ws://localhost:8000/v1/ws)** - assuming 01-flask runs locally on default port without SSL enabled
-
-<!-- - **[wss://api.01-flask.dev/v1/ws](wss://api.01-flask.dev/v1/ws)** - hosted 01-flask server endpoint -->
 
 <br/>
 
@@ -351,8 +288,6 @@ Markets supported by 01-flask server can be queried via [`GET /markets`](#get-ma
 - `timestamp` when message has been received from node RPC API in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format with milliseconds, for example: "2021-03-23T17:03:03.994Z"
 
 - `slot` is a [Solana's slot](https://docs.solana.com/terminology#slot) number for which message has produced
-
-<!-- - `version` of 01 Exchange program layout (DEX version) -->
 
 - `price` and `size` are provided as strings to preserve precision
 
