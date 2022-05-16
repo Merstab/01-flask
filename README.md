@@ -1,4 +1,4 @@
-<img src="/01-Flask-Banner.svg">
+<img src="https://raw.githubusercontent.com/Merstab/01-flask/main/01-Flask-Banner.svg">
 
 # 01-Flask: real-time WS market data API for 01 Exchange
 
