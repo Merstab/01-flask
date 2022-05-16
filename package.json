@@ -8,16 +8,16 @@
   "main": "dist/index.js",
   "source": "src/index.js",
   "types": "dist/index.d.ts",
-  "repository": "Merstab/01-flask",
-  "homepage": "https://github.com/Merstab/01-flask",
+  "repository": "merstab/01-flask",
+  "homepage": "https://github.com/merstab/01-flask",
   "scripts": {
     "build": "tsc",
     "precommit": "lint-staged",
-    "test": "npm run build && jest --forceExit",
+    "test": "npm run build && jest --ci --coverage --silent --forceExit",
     "prepare": "npm run build",
     "start:debug": "npm run build && node ./bin/01-flask.js --log-level=debug",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check src/"
   },
   "bin": {
     "01-flask": "bin/01-flask.js"
@@ -82,4 +82,3 @@
     "testEnvironment": "node"
   }
 }
-

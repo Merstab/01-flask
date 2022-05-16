@@ -1,239 +1,242 @@
-import fetch from 'node-fetch'
-import WebSocket from 'ws'
-import { bootServer, stopServer, DataMessage, ZoListMarketItem, SubRequest, SuccessResponse } from '../dist'
-import { wait } from '../dist/helpers'
+import fetch from "node-fetch";
+import WebSocket from "ws";
+import {
+  bootServer,
+  stopServer,
+  DataMessage,
+  ZoListMarketItem,
+  SubRequest,
+  SuccessResponse,
+} from "../dist";
+import { wait } from "../dist/helpers";
 
-const PORT = 8989
-const TIMEOUT = 120 * 1000
-const WS_ENDPOINT = `ws://localhost:${PORT}/v1/ws`
+const PORT = 8989;
+const TIMEOUT = 120 * 1000;
+const WS_ENDPOINT = `ws://localhost:${PORT}/v1/ws`;
 
 async function fetchMarkets() {
-  const response = await fetch(`http://localhost:${PORT}/v1/markets`)
+  const response = await fetch(`http://localhost:${PORT}/v1/markets`);
 
-  return (await response.json()) as ZoListMarketItem[]
+  return (await response.json()) as ZoListMarketItem[];
 }
 
-describe('serum-vial', () => {
+describe("01-flask", () => {
   beforeAll(async () => {
     await bootServer({
       port: PORT,
-      commitment: 'confirmed',
+      commitment: "confirmed",
       markets: [
         {
-          address: '8JbzKqa9CK85Po4PophvA5NkuKSacgEnZdhwW64pu4Vd',
-          symbol: 'BTC-PERP',
-          name: 'BTC-PERP',
-          programId: 'ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK'
-        }
-        // ,{
-        //   address: 'EqZrg5VzrJdBs9EnUBURXJMyhHZ5A4YeX57g62Uufk8w',
-        //   symbol: 'SOL-PERP',
-        //   name: 'SOL-PERP',
-        //   programId: 'ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK'
-        // }
+          address: "8JbzKqa9CK85Po4PophvA5NkuKSacgEnZdhwW64pu4Vd",
+          symbol: "BTC-PERP",
+          name: "BTC-PERP",
+          programId: "ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK",
+        },
       ],
       minionsCount: 1,
-      nodeEndpoint: 'https://solana-api.projectserum.com',
+      nodeEndpoint: "https://solana-api.projectserum.com",
       wsEndpointPort: undefined,
-      bootDelay: 5
-    })
-  }, TIMEOUT)
+      bootDelay: 5,
+    });
+  }, TIMEOUT);
 
   afterAll(async () => {
-    await stopServer()
-  }, TIMEOUT)
+    await stopServer();
+  }, TIMEOUT);
 
   test(
-    'HTTP GET /markets',
+    "HTTP GET /markets",
     async () => {
-      const markets = await fetchMarkets()
-
-      expect(markets).toMatchSnapshot()
+      const markets = await fetchMarkets();
+      expect(markets).toMatchSnapshot();
     },
     TIMEOUT
-  )
+  );
 
   test(
-    'WS trades data stream',
+    "WS trades data stream",
     async () => {
-      const wsClient = new SimpleWebsocketClient(WS_ENDPOINT)
-      const markets = await fetchMarkets()
+      const wsClient = new SimpleWebsocketClient(WS_ENDPOINT);
+      const markets = await fetchMarkets();
 
       const subscribeRequest: SubRequest = {
-        op: 'subscribe',
-        channel: 'trades',
-        markets: markets.map((m) => m.name)
-      }
+        op: "subscribe",
+        channel: "trades",
+        markets: markets.map((m) => m.name),
+      };
 
-      let receivedSubscribed = false
-      let receivedRecentTrades = false
+      let receivedSubscribed = false;
+      let receivedRecentTrades = false;
 
-      await wsClient.send(subscribeRequest)
-      let messagesCount = 0
+      await wsClient.send(subscribeRequest);
+      let messagesCount = 0;
 
       for await (const message of wsClient.stream()) {
-        if (message.type === 'subscribed') {
-          receivedSubscribed = true
+        if (message.type === "subscribed") {
+          receivedSubscribed = true;
         }
 
-        if (message.type === 'recent_trades') {
-          receivedRecentTrades = true
+        if (message.type === "recent_trades") {
+          receivedRecentTrades = true;
         }
 
-        messagesCount++
-        if (messagesCount == 1) {
-          break
+        messagesCount++;
+        if (messagesCount == 2) {
+          break;
         }
       }
 
-      expect(messagesCount).toBe(1)
-      expect(receivedSubscribed).toBe(true)
-      expect(receivedRecentTrades).toBe(true)
+      expect(messagesCount).toBe(2);
+      expect(receivedSubscribed).toBe(true);
+      expect(receivedRecentTrades).toBe(true);
     },
     TIMEOUT
-  )
+  );
 
   test(
-    'WS level1 data stream',
+    "WS level1 data stream",
     async () => {
-      const wsClient = new SimpleWebsocketClient(WS_ENDPOINT)
-      const markets = await fetchMarkets()
+      const wsClient = new SimpleWebsocketClient(WS_ENDPOINT);
+      const markets = await fetchMarkets();
 
       const subscribeRequest: SubRequest = {
-        op: 'subscribe',
-        channel: 'level1',
-        markets: markets.map((m) => m.name)
-      }
+        op: "subscribe",
+        channel: "level1",
+        markets: markets.map((m) => m.name),
+      };
 
-      await wsClient.send(subscribeRequest)
-      let l1MessagesCount = 0
-      let receivedSubscribed = false
-      let receivedQuoteMessage = false
+      await wsClient.send(subscribeRequest);
+      let l1MessagesCount = 0;
+      let receivedSubscribed = false;
+      let receivedQuoteMessage = false;
 
       for await (const message of wsClient.stream()) {
-        if (message.type === 'subscribed') {
-          receivedSubscribed = true
+        if (message.type === "subscribed") {
+          receivedSubscribed = true;
         }
 
-        if (message.type === 'quote') {
-          receivedQuoteMessage = true
+        if (message.type === "quote") {
+          receivedQuoteMessage = true;
         }
 
-        l1MessagesCount++
+        l1MessagesCount++;
         if (l1MessagesCount == 2) {
-          break
+          break;
         }
       }
 
-      expect(l1MessagesCount).toBe(2)
-      expect(receivedSubscribed).toBe(true)
-      expect(receivedQuoteMessage).toBe(true)
+      expect(l1MessagesCount).toBe(2);
+      expect(receivedSubscribed).toBe(true);
+      expect(receivedQuoteMessage).toBe(true);
     },
     TIMEOUT
-  )
+  );
 
   test(
-    'WS level2 data stream',
+    "WS level2 data stream",
     async () => {
-      const wsClient = new SimpleWebsocketClient(WS_ENDPOINT)
-      const markets = await fetchMarkets()
-      let receivedSubscribed = false
-      let receivedSnapshot = false
+      const wsClient = new SimpleWebsocketClient(WS_ENDPOINT);
+      const markets = await fetchMarkets();
+      let receivedSubscribed = false;
+      let receivedSnapshot = false;
 
       const subscribeRequest: SubRequest = {
-        op: 'subscribe',
-        channel: 'level2',
-        markets: markets.map((m) => m.name)
-      }
+        op: "subscribe",
+        channel: "level2",
+        markets: markets.map((m) => m.name),
+      };
 
-      await wsClient.send(subscribeRequest)
-      let l2MessagesCount = 0
+      await wsClient.send(subscribeRequest);
+      let l2MessagesCount = 0;
 
       for await (const message of wsClient.stream()) {
-        if (message.type === 'subscribed') {
-          receivedSubscribed = true
+        if (message.type === "subscribed") {
+          receivedSubscribed = true;
         }
 
-        if (message.type === 'l2snapshot') {
-          receivedSnapshot = true
+        if (message.type === "l2snapshot") {
+          receivedSnapshot = true;
         }
 
-        l2MessagesCount++
+        l2MessagesCount++;
         if (l2MessagesCount == 2) {
-          break
+          break;
         }
       }
 
-      expect(l2MessagesCount).toBe(2)
-      expect(receivedSnapshot).toBe(true)
-      expect(receivedSubscribed).toBe(true)
+      expect(l2MessagesCount).toBe(2);
+      expect(receivedSnapshot).toBe(true);
+      expect(receivedSubscribed).toBe(true);
     },
     TIMEOUT
-  )
+  );
 
   test(
-    'WS level3 data stream',
+    "WS level3 data stream",
     async () => {
-      const wsClient = new SimpleWebsocketClient(WS_ENDPOINT)
-      const markets = await fetchMarkets()
+      const wsClient = new SimpleWebsocketClient(WS_ENDPOINT);
+      const markets = await fetchMarkets();
 
       const subscribeRequest: SubRequest = {
-        op: 'subscribe',
-        channel: 'level3',
-        markets: markets.map((m) => m.name)
-      }
+        op: "subscribe",
+        channel: "level3",
+        markets: markets.map((m) => m.name),
+      };
 
-      let receivedSubscribed = false
-      let receivedSnapshot = false
+      let receivedSubscribed = false;
+      let receivedSnapshot = false;
 
-      await wsClient.send(subscribeRequest)
-      let l3MessagesCount = 0
+      await wsClient.send(subscribeRequest);
+      let l3MessagesCount = 0;
 
       for await (const message of wsClient.stream()) {
-        if (message.type === 'subscribed') {
-          receivedSubscribed = true
+        if (message.type === "subscribed") {
+          receivedSubscribed = true;
         }
 
-        if (message.type === 'l3snapshot') {
-          receivedSnapshot = true
+        if (message.type === "l3snapshot") {
+          receivedSnapshot = true;
         }
 
-        l3MessagesCount++
-        if (l3MessagesCount == 20) {
-          break
+        l3MessagesCount++;
+        if (l3MessagesCount == 10) {
+          break;
         }
       }
 
-      expect(l3MessagesCount).toBe(20)
-      expect(receivedSubscribed).toBe(true)
-      expect(receivedSnapshot).toBe(true)
+      expect(l3MessagesCount).toBe(10);
+      expect(receivedSubscribed).toBe(true);
+      expect(receivedSnapshot).toBe(true);
     },
     TIMEOUT
-  )
+  );
 
   class SimpleWebsocketClient {
-    private readonly _socket: WebSocket
+    private readonly _socket: WebSocket;
 
     constructor(url: string) {
-      this._socket = new WebSocket(url)
+      this._socket = new WebSocket(url);
     }
 
     public async send(payload: any) {
       while (this._socket.readyState !== WebSocket.OPEN) {
-        await wait(100)
+        await wait(100);
       }
-      this._socket.send(JSON.stringify(payload))
+      this._socket.send(JSON.stringify(payload));
     }
 
     public async *stream() {
-      const realtimeMessagesStream = (WebSocket as any).createWebSocketStream(this._socket, {
-        readableObjectMode: true
-      }) as AsyncIterableIterator<Buffer>
+      const realtimeMessagesStream = (WebSocket as any).createWebSocketStream(
+        this._socket,
+        {
+          readableObjectMode: true,
+        }
+      ) as AsyncIterableIterator<Buffer>;
 
       for await (let messageBuffer of realtimeMessagesStream) {
-        const message = JSON.parse(messageBuffer as any)
-        yield message as DataMessage | SuccessResponse
+        const message = JSON.parse(messageBuffer as any);
+        yield message as DataMessage | SuccessResponse;
       }
     }
   }
-})
+});

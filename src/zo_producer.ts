@@ -1,23 +1,27 @@
-import { PublicKey } from '@solana/web3.js'
-import { ZoMarket } from '@zero_one/client'
-import { isMainThread, workerData } from 'worker_threads'
-import { MessageType } from './consts'
-import { DataMapper } from './data_mapper'
-import { decimalPlaces, zoDataChannel, zoProducerReadyChannel } from './helpers'
-import { logger } from './logger'
-import { RPCClient } from './rpc_client'
-import { ZoMarketInfo } from './types'
+import { PublicKey } from "@solana/web3.js";
+import { ZoMarket } from "@zero_one/client";
+import { isMainThread, workerData } from "worker_threads";
+import { MessageType } from "./consts";
+import { DataMapper } from "./data_mapper";
+import {
+  decimalPlaces,
+  zoDataChannel,
+  zoProducerReadyChannel,
+} from "./helpers";
+import { logger } from "./logger";
+import { RPCClient } from "./rpc_client";
+import { ZoMarketInfo } from "./types";
 
 if (isMainThread) {
-  const message = 'Exiting. Worker is not meant to run in main thread'
-  logger.log('error', message)
+  const message = "Exiting. Worker is not meant to run in main thread";
+  logger.log("error", message);
 
-  throw new Error(message)
+  throw new Error(message);
 }
 
-process.on('unhandledRejection', (err) => {
-  throw err
-})
+process.on("unhandledRejection", (err) => {
+  throw err;
+});
 
 // SerumProducer responsibility is to:
 // - connect to Serum Node RPC API via WS and subscribe to single Serum market
@@ -26,23 +30,26 @@ process.on('unhandledRejection', (err) => {
 export class ZoProducer {
   constructor(
     private readonly _options: {
-      nodeEndpoint: string
-      wsEndpointPort: number | undefined
-      market: ZoMarketInfo //ZoMarketInfo
-      commitment: string
+      nodeEndpoint: string;
+      wsEndpointPort: number | undefined;
+      market: ZoMarketInfo; //ZoMarketInfo
+      commitment: string;
     }
   ) {}
 
   public async run(onData: OnDataCallback) {
-    let started = false
-    logger.log('info', `01 producer starting for ${this._options.market.name} market...`)
+    let started = false;
+    logger.log(
+      "info",
+      `01 producer starting for ${this._options.market.name} market...`
+    );
 
     // don't use Solana web3.js Connection but custom rpcClient so we have more control and insight what is going on
     const rpcClient = new RPCClient({
       nodeEndpoint: this._options.nodeEndpoint,
       commitment: this._options.commitment,
-      wsEndpointPort: this._options.wsEndpointPort
-    })
+      wsEndpointPort: this._options.wsEndpointPort,
+    });
 
     // ZoMarket
     const market = await ZoMarket.load(
@@ -51,65 +58,71 @@ export class ZoProducer {
       undefined,
       // {},
       new PublicKey(this._options.market.programId)
-    )
+    );
 
-    const priceDecimalPlaces = decimalPlaces(market.tickSize)
-    const sizeDecimalPlaces = decimalPlaces(market.minOrderSize)
+    const priceDecimalPlaces = decimalPlaces(market.tickSize);
+    const sizeDecimalPlaces = decimalPlaces(market.minOrderSize);
 
     const dataMapper = new DataMapper({
       symbol: this._options.market.name, //market.symbol
       market,
       priceDecimalPlaces,
-      sizeDecimalPlaces
-    })
+      sizeDecimalPlaces,
+    });
 
-    let start = process.hrtime()
-    const interval = 600
+    let start = process.hrtime();
+    const interval = 600;
 
     // based on https://github.com/tj/node-blocked/blob/master/index.js
     setInterval(() => {
-      const delta = process.hrtime(start)
-      const nanosec = delta[0] * 1e9 + delta[1]
-      const ms = nanosec / 1e6
-      const n = ms - interval
+      const delta = process.hrtime(start);
+      const nanosec = delta[0] * 1e9 + delta[1];
+      const ms = nanosec / 1e6;
+      const n = ms - interval;
 
       if (n > 200) {
-        logger.log('info', `Event loop blocked for ${Math.round(n)} ms.`, {
-          market: this._options.market.name //market.symbol
-        })
+        logger.log("info", `Event loop blocked for ${Math.round(n)} ms.`, {
+          market: this._options.market.name, //market.symbol
+        });
       }
 
-      start = process.hrtime()
-    }, interval).unref()
+      start = process.hrtime();
+    }, interval).unref();
 
-    for await (const notification of rpcClient.streamAccountsNotification(market, this._options.market.name)) {
+    for await (const notification of rpcClient.streamAccountsNotification(
+      market,
+      this._options.market.name
+    )) {
       if (started === false) {
-        logger.log('info', `01 producer started for ${this._options.market.name} market...`)
-        started = true
-        zoProducerReadyChannel.postMessage('ready')
+        logger.log(
+          "info",
+          `01 producer started for ${this._options.market.name} market...`
+        );
+        started = true;
+        zoProducerReadyChannel.postMessage("ready");
       }
 
-      const messagesForSlot = [...dataMapper.map(notification)]
+      const messagesForSlot = [...dataMapper.map(notification)];
 
       if (messagesForSlot.length > 0) {
-        onData(messagesForSlot)
+        onData(messagesForSlot);
       }
     }
   }
 }
 
-const zoProducer = new ZoProducer(workerData)
+const zoProducer = new ZoProducer(workerData);
 
 zoProducer.run((envelopes) => {
-  zoDataChannel.postMessage(envelopes)
-})
+  zoDataChannel.postMessage(envelopes);
+});
 
 export type MessageEnvelope = {
-  type: MessageType
-  market: string
-  publish: boolean
-  payload: string
-  timestamp: string
-}
+  type: MessageType;
+  market: string;
+  publish: boolean;
+  payload: string;
+  timestamp: string;
+};
 
-type OnDataCallback = (envelopes: MessageEnvelope[]) => void
+type OnDataCallback = (envelopes: MessageEnvelope[]) => void;
