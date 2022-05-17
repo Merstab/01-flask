@@ -6,7 +6,7 @@
 
 ## Why?
 
-We all know that 01 Exchange is awesome, but since it's a new ecosystem, tooling around it may not be so convenient especially from centralized exchanges APIs users perspective. 01-Flask which is a real-time WebSocket market data API server for 01 Exchange hopes to alleviate some of those issues by offering:
+We all know that 01 Exchange is awesome, but since it's a new ecosystem, tooling around it may not be so convenient especially from centralized exchange API users perspective. 01-Flask which is a real-time WebSocket market data API server for 01 Exchange hopes to alleviate some of those issues by offering:
 
 - **familiar experience for centralized exchanges APIs users**
 
