@@ -22,7 +22,9 @@ We all know that 01 Exchange is awesome, but since it's a new ecosystem, tooling
 
 ## What about placing/cancelling orders endpoints?
 
-01-flask provides real-time market data only and does not include endpoints for placing/canceling or tracking own orders as that requires handling private keys which is currently out of scope of this project.
+01-flask provides real-time market data only and does not include endpoints for placing/canceling or tracking your own orders as that requires handling private keys which is currently out of scope of this project.
+
+However, please check https://github.com/01protocol for updates on clients that help with order placing/canceling. 
 
 <br/>
 <br/>
