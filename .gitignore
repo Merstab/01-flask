@@ -98,3 +98,4 @@ tests/cases/user/prettier/prettier
 .eslintcache
 dist/
 tsconfig.tsbuildinfo
+.terraform*
